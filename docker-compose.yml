@@ -1,0 +1,82 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-learnbridge}
+      POSTGRES_USER: ${POSTGRES_USER:-learnbridge}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change_this_password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/001-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  api:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      PORT: 3001
+      DB_HOST: db
+      DB_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-learnbridge}
+      POSTGRES_USER: ${POSTGRES_USER:-learnbridge}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change_this_password}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4.1-mini}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-https://api.openai.com/v1}
+      AZURE_OPENAI_ENDPOINT: ${AZURE_OPENAI_ENDPOINT:-}
+      AZURE_OPENAI_API_KEY: ${AZURE_OPENAI_API_KEY:-}
+      AZURE_OPENAI_DEPLOYMENT: ${AZURE_OPENAI_DEPLOYMENT:-}
+      APP_ORIGIN: ${APP_ORIGIN:-http://localhost:8080}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:8080}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      SUPPORT_EMAIL: ${SUPPORT_EMAIL:-}
+      TERMS_URL: ${TERMS_URL:-}
+      PRIVACY_URL: ${PRIVACY_URL:-}
+      REFUND_POLICY_URL: ${REFUND_POLICY_URL:-}
+      TERMS_VERSION: ${TERMS_VERSION:-}
+      SUPER_ADMIN_NAME: ${SUPER_ADMIN_NAME:-}
+      SUPER_ADMIN_EMAIL: ${SUPER_ADMIN_EMAIL:-}
+      SUPER_ADMIN_PASSWORD: ${SUPER_ADMIN_PASSWORD:-}
+      PAYSTACK_SECRET_KEY: ${PAYSTACK_SECRET_KEY:-}
+      PAYSTACK_INDIVIDUAL_MONTHLY_PLAN: ${PAYSTACK_INDIVIDUAL_MONTHLY_PLAN:-}
+      PAYSTACK_INDIVIDUAL_ANNUAL_PLAN: ${PAYSTACK_INDIVIDUAL_ANNUAL_PLAN:-}
+      PAYSTACK_FAMILY_MONTHLY_PLAN: ${PAYSTACK_FAMILY_MONTHLY_PLAN:-}
+      PAYSTACK_FAMILY_ANNUAL_PLAN: ${PAYSTACK_FAMILY_ANNUAL_PLAN:-}
+      PRELOAD_TOKEN: ${PRELOAD_TOKEN:-}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_REQUIRE_TLS: ${SMTP_REQUIRE_TLS:-true}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM: ${SMTP_FROM:-}
+      SMTP_REPLY_TO: ${SMTP_REPLY_TO:-}
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3001/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

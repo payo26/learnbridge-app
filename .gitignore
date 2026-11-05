@@ -1,0 +1,17 @@
+node_modules/
+backend/node_modules/
+dist/
+.env
+*.log
+*.zip
+.learnbridge-preload-progress.json
+.learnbridge-diagram-progress.json
+.learnbridge-illustration-v2-progress.json
+.learnbridge-illustration-v6-progress.json
+diagram-audit*.json
+*.sql
+*.dump
+coverage-previews/
+anatomy-previews/
+anatomy-work/
+render-coverage-previews.tsx

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title description">
+  <title id="title">LearnBridge</title>
+  <desc id="description">Nigerian and British secondary learning pathways in one platform</desc>
+  <defs><linearGradient id="background" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#33245f"/><stop offset=".58" stop-color="#6550ce"/><stop offset="1" stop-color="#8d75e4"/></linearGradient></defs>
+  <rect width="1200" height="630" fill="url(#background)"/>
+  <circle cx="1060" cy="80" r="240" fill="#fff" opacity=".06"/>
+  <circle cx="1080" cy="570" r="310" fill="#1c1239" opacity=".13"/>
+  <g transform="translate(82 78)"><rect width="92" height="92" rx="23" fill="#fff"/><path d="M17 37 46 22l29 15-29 15-29-15Z" fill="#6550ce"/><path d="M27 47v17c11 9 27 9 38 0V47l-19 10-19-10Z" fill="#9b88ef"/><path d="M73 41v21" stroke="#6550ce" stroke-width="5" stroke-linecap="round"/></g>
+  <text x="198" y="143" fill="#fff" font-family="Arial, sans-serif" font-size="58" font-weight="800">LearnBridge</text>
+  <text x="82" y="275" fill="#fff" font-family="Arial, sans-serif" font-size="56" font-weight="750">Learn locally.</text>
+  <text x="82" y="346" fill="#fff" font-family="Arial, sans-serif" font-size="56" font-weight="750">Think globally.</text>
+  <text x="84" y="424" fill="#e9e4ff" font-family="Arial, sans-serif" font-size="27">Structured secondary subjects, topic plans and lesson notes</text>
+  <g transform="translate(84 482)" font-family="Arial, sans-serif" font-size="22" font-weight="700"><rect width="260" height="62" rx="31" fill="#fff" opacity=".15"/><text x="130" y="39" text-anchor="middle" fill="#fff">NIGERIAN PATHWAY</text><rect x="280" width="250" height="62" rx="31" fill="#fff" opacity=".15"/><text x="405" y="39" text-anchor="middle" fill="#fff">BRITISH PATHWAY</text></g>
+</svg>

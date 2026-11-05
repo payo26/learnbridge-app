@@ -1,0 +1,147 @@
+{
+  "objectives": [
+    "Recognise equivalent fractions by scaling numerator and denominator equally.",
+    "Add fractions using a common denominator.",
+    "Explain an answer using a diagram or real-life example."
+  ],
+  "keyTerms": [
+    {
+      "term": "Numerator",
+      "definition": "The top number of a fraction. It counts the selected equal parts."
+    },
+    {
+      "term": "Denominator",
+      "definition": "The bottom number. It tells you how many equal parts make one whole."
+    },
+    {
+      "term": "Equivalent fractions",
+      "definition": "Different fraction names for the same value, such as 1/2 and 2/4."
+    },
+    {
+      "term": "Common denominator",
+      "definition": "A denominator shared by the fractions being compared or combined."
+    }
+  ],
+  "sections": [
+    {
+      "heading": "1. Understanding equal parts",
+      "paragraphs": [
+        "A fraction describes equal parts of a whole or equal groups within a collection. In 3/4, the denominator 4 says that one whole has been divided into four equal parts, and the numerator 3 says that three of those parts are selected. The parts must be equal. Cutting a loaf into four unequal pieces does not make each piece one quarter.",
+        "The whole matters when comparing fractions. Half of a large loaf can be bigger than half of a small loaf. In a calculation such as 1/2 + 1/4, both fractions must refer to the same unit or whole. You can picture one rectangular strip divided into four equal boxes: half occupies two boxes and a quarter occupies one."
+      ]
+    },
+    {
+      "heading": "2. Finding equivalent fractions",
+      "paragraphs": [
+        "Multiplying the numerator and denominator by the same non-zero number changes the number of parts without changing the fraction’s value. For example, 1/2 = 2/4 = 3/6. Dividing both numbers by a common factor also keeps the value unchanged. Thus 6/8 = 3/4 after dividing by 2.",
+        "To test whether two fractions are equivalent, you can simplify each one or express them with a common denominator. For example, 2/3 and 4/6 are equivalent because multiplying the numerator and denominator of 2/3 by 2 produces 4/6. Multiplying only the numerator would change the value; 2/3 is not equal to 4/3."
+      ]
+    },
+    {
+      "heading": "3. Adding fractions with the same denominator",
+      "paragraphs": [
+        "When denominators match, the parts have the same size. Add the numerators and keep the denominator: 2/7 + 3/7 = 5/7. You are counting seven-sized parts; the size of a part does not change. Do not add denominators. The incorrect expression 2/7 + 3/7 = 5/14 treats the pieces as if their size changed.",
+        "The sum may be larger than one whole. For example, 5/6 + 3/6 = 8/6. Simplify this to 4/3, or write it as the mixed number 1 1/3. A mixed number combines a whole number with a proper fraction. Check whether the question requests a mixed number, an improper fraction or the simplest form."
+      ]
+    },
+    {
+      "heading": "4. Adding fractions with different denominators",
+      "paragraphs": [
+        "First rename each fraction using a common denominator. For 1/2 + 1/4, use denominator 4: 1/2 = 2/4, so 2/4 + 1/4 = 3/4. This represents three of the four boxes in the strip. The answer is less than one whole, which is consistent with adding a half and a quarter.",
+        "For 1/3 + 1/4, a convenient common denominator is 12 because both 3 and 4 divide into 12. Rename 1/3 as 4/12 and 1/4 as 3/12, then add to obtain 7/12. The least common multiple often gives the smallest common denominator, but another common multiple will work if you simplify the result."
+      ]
+    },
+    {
+      "heading": "5. Applying and checking the method",
+      "paragraphs": [
+        "Suppose a learner spends 1/3 of an hour reading and 1/6 of an hour revising. Rename 1/3 as 2/6, then add 2/6 + 1/6 = 3/6 = 1/2 hour. Since an hour contains 60 minutes, the total is 30 minutes. Include units in your answer and check that the quantities refer to the same time unit.",
+        "Before calculating, estimate. Half plus a quarter should be larger than a half but smaller than one. After calculating, simplify and ask whether the result fits that estimate. Explain each equivalence you use rather than writing an unexplained answer. If a problem gives different units, convert them to a common unit first."
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "title": "Example 1: Add 2/5 and 1/10",
+      "steps": [
+        "Choose 10 as the common denominator.",
+        "Multiply the numerator and denominator of 2/5 by 2: 2/5 = 4/10.",
+        "Add the numerators: 4/10 + 1/10 = 5/10.",
+        "Simplify by dividing both numbers by 5: 5/10 = 1/2."
+      ]
+    },
+    {
+      "title": "Example 2: A reading timetable",
+      "steps": [
+        "A learner reads for 1/4 hour and then for 1/3 hour.",
+        "The least common multiple of 4 and 3 is 12.",
+        "1/4 = 3/12 and 1/3 = 4/12.",
+        "Total reading time = 7/12 hour. Multiply by 60 to obtain 35 minutes."
+      ]
+    }
+  ],
+  "summary": [
+    "Fraction parts must be equal and refer to the same whole.",
+    "Equivalent fractions scale the numerator and denominator equally.",
+    "Use a common denominator, add numerators and simplify.",
+    "Check the size of the answer and include units."
+  ],
+  "exercises": [
+    {
+      "question": "Write two fractions equivalent to 3/5.",
+      "answer": "6/10 and 9/15.",
+      "explanation": "Multiply both numerator and denominator by 2 or by 3."
+    },
+    {
+      "question": "Calculate 2/9 + 4/9.",
+      "answer": "2/3.",
+      "explanation": "2/9 + 4/9 = 6/9. Divide the numerator and denominator by 3."
+    },
+    {
+      "question": "Calculate 3/4 + 1/8.",
+      "answer": "7/8.",
+      "explanation": "3/4 = 6/8, so the sum is 6/8 + 1/8 = 7/8."
+    },
+    {
+      "question": "Explain why 1/2 + 1/3 is not 2/5.",
+      "answer": "The denominators describe different-sized parts and cannot simply be added.",
+      "explanation": "Use sixths: 1/2 = 3/6 and 1/3 = 2/6. The correct sum is 5/6."
+    },
+    {
+      "question": "A pupil studies for 1/2 hour and then 1/4 hour. How many minutes is that?",
+      "answer": "45 minutes.",
+      "explanation": "The total is 3/4 hour. 3/4 × 60 = 45."
+    }
+  ],
+  "quiz": [
+    {
+      "question": "What is 1/2 + 1/4?",
+      "choices": [
+        "2/6",
+        "3/4",
+        "1/8"
+      ],
+      "answer": 1,
+      "explanation": "Rename 1/2 as 2/4, then add 2/4 + 1/4 = 3/4."
+    },
+    {
+      "question": "Which fraction is equivalent to 2/3?",
+      "choices": [
+        "4/6",
+        "3/4",
+        "2/6"
+      ],
+      "answer": 0,
+      "explanation": "Multiplying numerator and denominator by 2 gives 4/6."
+    },
+    {
+      "question": "What is 1/3 + 1/6 in simplest form?",
+      "choices": [
+        "2/9",
+        "1/2",
+        "1/6"
+      ],
+      "answer": 1,
+      "explanation": "1/3 = 2/6; 2/6 + 1/6 = 3/6 = 1/2."
+    }
+  ]
+}

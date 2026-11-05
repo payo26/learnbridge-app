@@ -1,0 +1,143 @@
+[
+  {
+    "name": "Full built-in lesson notes and learner progress",
+    "sanity": true,
+    "viewport": "desktop",
+    "covers": [
+      "POST /api/class-plan",
+      "POST /api/lesson-notes",
+      "detailed topic list",
+      "full lesson explanations",
+      "worked examples",
+      "practice answers",
+      "quiz scoring",
+      "read status",
+      "bookmark create/read/delete",
+      "durable learner progress"
+    ],
+    "description": "A JSS1 learner reads a substantive lesson and saves progress.",
+    "steps": [
+      "Select Nigerian, Revised curriculum, Junior secondary and Year 7",
+      "Open Subjects and Mathematics using Open Mathematics",
+      "Verify 30 class topics, search for Fractions: equivalent fractions and addition and open it",
+      "Verify Learning objectives, Key terms, five explanatory teaching sections, Worked examples, Lesson summary and Practice questions",
+      "Open Show model answer for a practice question",
+      "Mark as read and Save bookmark",
+      "Answer the three checkpoint questions with 3/4, 4/6 and 1/2, then Check answers",
+      "Close subject and open Progress, refresh and verify the lesson is read with best score 100%",
+      "Open Bookmarks and Read notes, then close, Remove the full-notes bookmark and refresh"
+    ],
+    "expected": "The substantive fraction notes teach the method and show worked solutions; the checkpoint score is 100%. Read status and score persist. The bookmark persists until removed and stays removed after refresh."
+  },
+  {
+    "name": "Distinct class plans and curriculum subject boundaries",
+    "viewport": "desktop",
+    "covers": [
+      "class-specific plan selection",
+      "junior/senior subject separation",
+      "class preference persistence",
+      "class-specific learner state",
+      "topic and term filters",
+      "previous/next topic navigation",
+      "empty search guardrail"
+    ],
+    "description": "Classes get distinct plans and retain their subject boundaries.",
+    "steps": [
+      "Select Nigerian, Revised curriculum, Junior secondary, Year 8",
+      "Open Mathematics and verify 30 topics including Percentage increase and decrease",
+      "Filter Term 2 then search zzzmissing and clear topic filters",
+      "Close subject and select Year 9; open Mathematics and verify Simultaneous linear equations and Linear inequalities",
+      "Close subject, search Chemistry and verify no junior subject results",
+      "Clear filters, choose Senior secondary, Year 10 and Science category; verify Chemistry is available",
+      "Refresh and verify Year 10 and Nigerian persist"
+    ],
+    "expected": "JSS2 and JSS3 show different detailed topic sets. Topic search has a useful empty state and clearing restores results. Junior excludes standalone Chemistry, senior includes it, and preferences persist."
+  },
+  {
+    "name": "Generated lesson notes for a Nigerian subject",
+    "viewport": "mobile",
+    "covers": [
+      "AI class-plan generation",
+      "AI lesson-note generation",
+      "database plan/notes caching",
+      "mobile topic navigation",
+      "generated-content provenance",
+      "notes structure",
+      "model answers",
+      "partial-quiz validation",
+      "four-part note preparation",
+      "completed-note browser cache",
+      "server section cache"
+    ],
+    "description": "A non-seeded subject provides real teaching notes rather than a placeholder.",
+    "steps": [
+      "Select Nigerian, Revised curriculum, Junior secondary and Year 7",
+      "Open Business Studies and wait for the detailed class plan",
+      "Verify at least 30 distinct topic entries and suggested term groups",
+      "Open the first topic and wait while the four lesson sections prepare",
+      "Verify that no AI attribution is displayed and that explanatory sections, two worked examples, a summary, practice questions with model answers and at least three checkpoint questions are present",
+      "Click Check answers without answering every checkpoint question",
+      "Verify validation, Close subject, refresh and reopen the same topic"
+    ],
+    "expected": "Full notes contain substantive Business Studies teaching with explanations and examples, not just instructions to consult a textbook. Unanswered checkpoint submission is blocked. The same saved plan and notes return after reload. The completed notes are saved and reopen without generating the entire lesson again."
+  },
+  {
+    "name": "Class-plan failure and retry",
+    "viewport": "mobile",
+    "covers": [
+      "POST /api/class-plan error handling",
+      "AI service failure visibility",
+      "topic-plan retry",
+      "progress preservation"
+    ],
+    "description": "A topic-service failure gives a useful message and a retry.",
+    "qa_faults": [
+      {
+        "method": "POST",
+        "path": "/api/class-plan",
+        "status": 503,
+        "body_json": {
+          "error": "The topic plan service is temporarily unavailable."
+        }
+      }
+    ],
+    "steps": [
+      "Select Nigerian, Junior secondary, Year 7 and open Intermediate Science",
+      "Verify the class topic plan failure message",
+      "Use Retry topic plan"
+    ],
+    "expected": "The failure is visible with Retry topic plan. Retrying either loads a plan if service recovers or retains a clear failure message; it never shows fabricated topics or clears saved progress."
+  },
+  {
+    "name": "Lesson-note failure and retry",
+    "viewport": "desktop",
+    "covers": [
+      "POST /api/lesson-notes error handling",
+      "lesson-note retry",
+      "topic navigation after failure",
+      "no false completion on failure",
+      "British curriculum retained",
+      "server error detail visibility",
+      "resume partial lesson retry"
+    ],
+    "description": "A failed note request is recoverable without pretending notes exist.",
+    "qa_faults": [
+      {
+        "method": "POST",
+        "path": "/api/lesson-notes",
+        "status": 503,
+        "body_json": {
+          "error": "The lesson service is temporarily unavailable. Please retry."
+        }
+      }
+    ],
+    "steps": [
+      "Select Nigerian, Revised curriculum, Junior secondary, Year 9 and open Mathematics",
+      "Open Linear inequalities, a topic not used in another test",
+      "Verify the lesson-service failure message and Retry lesson notes",
+      "Use Retry lesson notes and then All topics",
+      "Close subject, select British and verify KS3 or the appropriate current British subject set remains available"
+    ],
+    "expected": "The actual lesson-service failure is visible with Retry lesson notes. No completion or quiz controls appear for unavailable notes, and All topics remains usable. Retrying reuses successful saved sections when available; British subject selection remains usable."
+  }
+]

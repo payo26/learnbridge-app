@@ -1,0 +1,46 @@
+import MathText from './MathText';
+
+const samples=[
+  {
+    title:'Reported equation',
+    description:'Repeated escaping and Markdown are cleaned before the whole expression is typeset.',
+    text:String.raw`**Solve \\( \\frac{3}{4}x + \\frac{1}{2}x = 1 \\)?**`,
+  },
+  {
+    title:'Plain slash input',
+    description:'Short slash fractions are converted to stacked textbook fractions.',
+    text:'Calculate 3/4x + 1/2x = 1.',
+  },
+  {
+    title:'Stretching round brackets',
+    description:'Both brackets are in the same MathML row as the fraction.',
+    text:String.raw`Simplify \( \left(\frac{x+1}{2}\right) + \frac{3}{5} \).`,
+  },
+  {
+    title:'Powers and roots',
+    description:'Superscripts, square roots, operators and fractions share one baseline.',
+    text:String.raw`Evaluate \( \sqrt{x^2 + \frac{1}{4}} \).`,
+  },
+  {
+    title:'Balanced chemical equation',
+    description:'Coefficients remain on the baseline while atom counts become true subscripts.',
+    text:String.raw`Water forms according to \( 2H_{2}(g) + O_{2}(g) \rightarrow 2H_{2}O(l) \).`,
+  },
+];
+
+export default function MathPreview() {
+  return <main className='math-preview-page'>
+    <header><span>LearnBridge localhost test</span><strong>Native MathML renderer 1</strong></header>
+    <section className='math-preview-intro'>
+      <span className='eyebrow'>EQUATION QUALITY CHECK</span>
+      <h1>Textbook mathematics and chemistry notation</h1>
+      <p>Review every sample at normal browser zoom and on the screen sizes you intend to support.</p>
+    </section>
+    <section className='math-preview-grid'>{samples.map(sample=><article key={sample.title}>
+      <h2>{sample.title}</h2>
+      <p>{sample.description}</p>
+      <div className='math-preview-example'><MathText text={sample.text}/></div>
+    </article>)}</section>
+    <p className='math-preview-note'>This page uses the same MathText component used by lesson explanations, worked examples, exercises, model answers and checkpoint choices.</p>
+  </main>;
+}

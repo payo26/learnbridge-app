@@ -1,0 +1,189 @@
+name: LearnBridge CI/CD
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: learnbridge-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  DOCKERHUB_NAMESPACE: prayo25
+  IMAGE_TAG: sha-${{ github.sha }}
+
+jobs:
+  build-test-push:
+    name: Test, build and publish images
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build production frontend and SEO pages
+        run: npm run build
+
+      - name: Set up Docker Buildx
+        if: github.event_name != 'pull_request'
+        uses: docker/setup-buildx-action@v3
+
+      - name: Sign in to Docker Hub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push API image
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: ./backend/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ${{ env.DOCKERHUB_NAMESPACE }}/learnbridge-api:${{ env.IMAGE_TAG }}
+            ${{ env.DOCKERHUB_NAMESPACE }}/learnbridge-api:production
+          cache-from: type=gha,scope=learnbridge-api
+          cache-to: type=gha,mode=max,scope=learnbridge-api
+
+      - name: Build and push web image
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ${{ env.DOCKERHUB_NAMESPACE }}/learnbridge-web:${{ env.IMAGE_TAG }}
+            ${{ env.DOCKERHUB_NAMESPACE }}/learnbridge-web:production
+          cache-from: type=gha,scope=learnbridge-web
+          cache-to: type=gha,mode=max,scope=learnbridge-web
+
+  deploy-production:
+    name: Deploy to Azure VM
+    if: github.event_name != 'pull_request'
+    needs: build-test-push
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: production
+      url: https://learnbridge-app.com
+
+    steps:
+      - name: Configure SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.VM_SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.VM_KNOWN_HOSTS }}
+        run: |
+          install -m 700 -d "$HOME/.ssh"
+          printf '%s\n' "$SSH_PRIVATE_KEY" > "$HOME/.ssh/id_ed25519"
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/id_ed25519" "$HOME/.ssh/known_hosts"
+
+      - name: Deploy and verify
+        env:
+          SSH_HOST: ${{ secrets.VM_HOST }}
+          SSH_USER: ${{ secrets.VM_USER }}
+          DEPLOY_TAG: sha-${{ github.sha }}
+        run: |
+          ssh -o BatchMode=yes -o StrictHostKeyChecking=yes \
+            "$SSH_USER@$SSH_HOST" \
+            "DEPLOY_TAG='$DEPLOY_TAG' bash -s" <<'REMOTE'
+          set -Eeuo pipefail
+
+          cd /home/azureuser/learnbridge
+          test -s .env
+          test -s compose.prod.yml
+
+          compose() {
+            docker compose --env-file .env -f compose.prod.yml "$@"
+          }
+
+          update_image_tag() {
+            local tag="$1"
+            if grep -q '^IMAGE_TAG=' .env; then
+              sed -i "s|^IMAGE_TAG=.*|IMAGE_TAG=${tag}|" .env
+            else
+              printf '\nIMAGE_TAG=%s\n' "$tag" >> .env
+            fi
+            chmod 600 .env
+          }
+
+          previous_tag="$(sed -n 's/^IMAGE_TAG=//p' .env | tail -n 1)"
+          previous_tag="${previous_tag:-v8.0.8}"
+
+          mkdir -p backups
+          backup="backups/learnbridge-before-${DEPLOY_TAG}-$(date +%Y%m%d-%H%M%S).dump"
+          compose exec -T db sh -c \
+            'pg_dump -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Fc' > "$backup"
+          test -s "$backup"
+          find backups -type f -name 'learnbridge-before-*.dump' -mtime +14 -delete
+
+          IMAGE_TAG="$DEPLOY_TAG" \
+            docker compose --env-file .env -f compose.prod.yml pull api web
+
+          rollback() {
+            trap - ERR
+            echo "Deployment failed; restoring image tag ${previous_tag}."
+            update_image_tag "$previous_tag"
+            compose pull api web || true
+            compose up -d --force-recreate api web || true
+            compose restart caddy || true
+          }
+
+          trap rollback ERR
+          update_image_tag "$DEPLOY_TAG"
+          compose up -d --force-recreate api web
+
+          api_healthy=false
+          for attempt in $(seq 1 30); do
+            if compose exec -T api node -e \
+              "fetch('http://localhost:3001/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"; then
+              api_healthy=true
+              break
+            fi
+            sleep 10
+          done
+          test "$api_healthy" = true
+
+          compose exec -T web wget -qO- http://127.0.0.1/ >/dev/null
+          compose restart caddy
+
+          public_healthy=false
+          for attempt in $(seq 1 18); do
+            if curl --fail --silent --show-error --max-time 10 \
+              https://learnbridge-app.com/api/health | grep -q '"status":"ok"'; then
+              public_healthy=true
+              break
+            fi
+            sleep 10
+          done
+          test "$public_healthy" = true
+
+          trap - ERR
+          compose ps
+          echo "LearnBridge ${DEPLOY_TAG} deployed successfully."
+          REMOTE

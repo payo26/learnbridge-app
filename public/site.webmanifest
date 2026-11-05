@@ -1,0 +1,12 @@
+{
+  "name": "LearnBridge",
+  "short_name": "LearnBridge",
+  "description": "Nigerian and British secondary learning pathways in one platform.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f8fc",
+  "theme_color": "#6550ce",
+  "icons": [
+    {"src":"/favicon.svg","sizes":"any","type":"image/svg+xml","purpose":"any"}
+  ]
+}

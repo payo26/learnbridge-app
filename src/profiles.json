@@ -1,0 +1,1391 @@
+{
+  "ng-junior": [
+    {
+      "subjectId": "english-studies",
+      "group": "Core",
+      "status": "Core"
+    },
+    {
+      "subjectId": "mathematics",
+      "group": "Core",
+      "status": "Core"
+    },
+    {
+      "subjectId": "intermediate-science",
+      "group": "Core",
+      "status": "Core"
+    },
+    {
+      "subjectId": "physical-health-education",
+      "group": "Core",
+      "status": "Core"
+    },
+    {
+      "subjectId": "digital-technologies",
+      "group": "Core",
+      "status": "Core"
+    },
+    {
+      "subjectId": "nigerian-history",
+      "group": "Core",
+      "status": "Core"
+    },
+    {
+      "subjectId": "social-and-citizenship-studies",
+      "group": "Core",
+      "status": "Core"
+    },
+    {
+      "subjectId": "cultural-creative-arts",
+      "group": "Core",
+      "status": "Core"
+    },
+    {
+      "subjectId": "business-studies",
+      "group": "Core",
+      "status": "Core"
+    },
+    {
+      "subjectId": "nigerian-languages",
+      "group": "Languages",
+      "status": "Choose one Nigerian language"
+    },
+    {
+      "subjectId": "christian-religious-studies",
+      "group": "Religion",
+      "status": "Religious choice"
+    },
+    {
+      "subjectId": "islamic-studies",
+      "group": "Religion",
+      "status": "Religious choice"
+    },
+    {
+      "subjectId": "french",
+      "group": "Languages",
+      "status": "Optional"
+    },
+    {
+      "subjectId": "arabic",
+      "group": "Languages",
+      "status": "Optional"
+    },
+    {
+      "subjectId": "solar-photovoltaic-installation-and-maintenance",
+      "group": "Trade",
+      "status": "Choose one trade"
+    },
+    {
+      "subjectId": "fashion-design-and-garment-making",
+      "group": "Trade",
+      "status": "Choose one trade"
+    },
+    {
+      "subjectId": "livestock-farming",
+      "group": "Trade",
+      "status": "Choose one trade"
+    },
+    {
+      "subjectId": "beauty-and-cosmetology",
+      "group": "Trade",
+      "status": "Choose one trade"
+    },
+    {
+      "subjectId": "computer-hardware-and-gsm-repairs",
+      "group": "Trade",
+      "status": "Choose one trade"
+    },
+    {
+      "subjectId": "horticulture-and-crop-production",
+      "group": "Trade",
+      "status": "Choose one trade"
+    }
+  ],
+  "ng-senior": [
+    {
+      "subjectId": "english-language",
+      "group": "Core",
+      "status": "Core"
+    },
+    {
+      "subjectId": "general-mathematics",
+      "group": "Core",
+      "status": "Core"
+    },
+    {
+      "subjectId": "citizenship-and-heritage-studies",
+      "group": "Core",
+      "status": "Core"
+    },
+    {
+      "subjectId": "digital-technologies",
+      "group": "Core",
+      "status": "Core"
+    },
+    {
+      "subjectId": "biology",
+      "group": "Science",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "chemistry",
+      "group": "Science",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "physics",
+      "group": "Science",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "agriculture",
+      "group": "Science",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "further-mathematics",
+      "group": "Science",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "physical-education",
+      "group": "Science",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "health-education",
+      "group": "Science",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "foods-nutrition",
+      "group": "Science",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "geography",
+      "group": "Science",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "technical-drawing",
+      "group": "Science",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "nigerian-history",
+      "group": "Humanities",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "government",
+      "group": "Humanities",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "christian-religious-studies",
+      "group": "Humanities",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "islamic-studies",
+      "group": "Humanities",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "nigerian-languages",
+      "group": "Humanities",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "french",
+      "group": "Humanities",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "arabic",
+      "group": "Humanities",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "visual-arts",
+      "group": "Humanities",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "music",
+      "group": "Humanities",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "literature-in-english",
+      "group": "Humanities",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "home-management",
+      "group": "Humanities",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "catering-craft",
+      "group": "Humanities",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "accounting",
+      "group": "Business",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "commerce",
+      "group": "Business",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "marketing",
+      "group": "Business",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "economics",
+      "group": "Business",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "solar-photovoltaic-installation-and-maintenance",
+      "group": "Trade",
+      "status": "Choose one trade"
+    },
+    {
+      "subjectId": "fashion-design-and-garment-making",
+      "group": "Trade",
+      "status": "Choose one trade"
+    },
+    {
+      "subjectId": "livestock-farming",
+      "group": "Trade",
+      "status": "Choose one trade"
+    },
+    {
+      "subjectId": "beauty-and-cosmetology",
+      "group": "Trade",
+      "status": "Choose one trade"
+    },
+    {
+      "subjectId": "computer-hardware-and-gsm-repairs",
+      "group": "Trade",
+      "status": "Choose one trade"
+    },
+    {
+      "subjectId": "horticulture-and-crop-production",
+      "group": "Trade",
+      "status": "Choose one trade"
+    }
+  ],
+  "ng-old-junior": [
+    {
+      "subjectId": "english-language",
+      "group": "Core",
+      "status": "General subject"
+    },
+    {
+      "subjectId": "general-mathematics",
+      "group": "Core",
+      "status": "General subject"
+    },
+    {
+      "subjectId": "basic-science",
+      "group": "Science & Technology",
+      "status": "Component"
+    },
+    {
+      "subjectId": "basic-technology",
+      "group": "Science & Technology",
+      "status": "Component"
+    },
+    {
+      "subjectId": "information-technology",
+      "group": "Science & Technology",
+      "status": "Component"
+    },
+    {
+      "subjectId": "physical-health-education",
+      "group": "Science & Technology",
+      "status": "Component"
+    },
+    {
+      "subjectId": "social-studies",
+      "group": "Social & Civic",
+      "status": "Component"
+    },
+    {
+      "subjectId": "civic-education",
+      "group": "Social & Civic",
+      "status": "Component"
+    },
+    {
+      "subjectId": "security-education",
+      "group": "Social & Civic",
+      "status": "Component"
+    },
+    {
+      "subjectId": "nigerian-history",
+      "group": "Social & Civic",
+      "status": "School provision"
+    },
+    {
+      "subjectId": "cultural-creative-arts",
+      "group": "Arts",
+      "status": "General subject"
+    },
+    {
+      "subjectId": "business-studies",
+      "group": "Business",
+      "status": "General subject"
+    },
+    {
+      "subjectId": "home-economics",
+      "group": "Pre-vocational",
+      "status": "Component"
+    },
+    {
+      "subjectId": "agriculture",
+      "group": "Pre-vocational",
+      "status": "Component"
+    },
+    {
+      "subjectId": "entrepreneurship",
+      "group": "Pre-vocational",
+      "status": "School provision"
+    },
+    {
+      "subjectId": "nigerian-languages",
+      "group": "Languages",
+      "status": "Choose one Nigerian language"
+    },
+    {
+      "subjectId": "christian-religious-studies",
+      "group": "Religion",
+      "status": "Religious choice"
+    },
+    {
+      "subjectId": "islamic-studies",
+      "group": "Religion",
+      "status": "Religious choice"
+    },
+    {
+      "subjectId": "french",
+      "group": "Languages",
+      "status": "Optional"
+    },
+    {
+      "subjectId": "arabic",
+      "group": "Languages",
+      "status": "Optional"
+    }
+  ],
+  "ng-old-senior": [
+    {
+      "subjectId": "english-language",
+      "group": "Core",
+      "status": "Exam core"
+    },
+    {
+      "subjectId": "general-mathematics",
+      "group": "Core",
+      "status": "Exam core"
+    },
+    {
+      "subjectId": "civic-education",
+      "group": "General",
+      "status": "School curriculum"
+    },
+    {
+      "subjectId": "computer-it",
+      "group": "Technology",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "data-processing",
+      "group": "Technology",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "biology",
+      "group": "Science",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "chemistry",
+      "group": "Science",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "physics",
+      "group": "Science",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "agriculture",
+      "group": "Science",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "further-mathematics",
+      "group": "Science",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "physical-education",
+      "group": "Science",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "health-education",
+      "group": "Science",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "foods-nutrition",
+      "group": "Science",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "geography",
+      "group": "Science",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "technical-drawing",
+      "group": "Science",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "nigerian-history",
+      "group": "Humanities",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "government",
+      "group": "Humanities",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "christian-religious-studies",
+      "group": "Humanities",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "islamic-studies",
+      "group": "Humanities",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "nigerian-languages",
+      "group": "Humanities",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "french",
+      "group": "Humanities",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "arabic",
+      "group": "Humanities",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "visual-arts",
+      "group": "Humanities",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "music",
+      "group": "Humanities",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "literature-in-english",
+      "group": "Humanities",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "home-management",
+      "group": "Humanities",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "catering-craft",
+      "group": "Humanities",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "accounting",
+      "group": "Business",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "commerce",
+      "group": "Business",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "marketing",
+      "group": "Business",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "economics",
+      "group": "Business",
+      "status": "Elective"
+    },
+    {
+      "subjectId": "air-conditioning-and-refrigeration",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "animal-husbandry",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "auto-body-repair-and-spray-painting",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "auto-electrical-works",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "auto-mechanical-works",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "automobile-parts-merchandising",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "basic-electricity",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "basic-electronics",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "block-laying-brick-laying-and-concrete-works",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "book-keeping",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "building-construction",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "carpentry-and-joinery",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "clothing-textiles",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "cosmetology",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "dyeing-and-bleaching",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "electrical-installation-and-maintenance",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "fisheries",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "furniture-making",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "garment-making",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "gsm-maintenance-and-repairs",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "insurance",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "keyboarding",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "leather-goods",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "machine-woodworking",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "metal-work",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "mining",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "office-practice",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "painting-and-decoration",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "photography",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "plumbing-and-pipe-fitting",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "printing-craft-practice",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "radio-television-and-electrical-work",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "salesmanship",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "store-keeping",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "store-management",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "textile-trade",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "tie-and-dye-craft",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "tourism",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "upholstery",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "welding-and-fabrication",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    },
+    {
+      "subjectId": "woodwork",
+      "group": "Vocational options",
+      "status": "School/exam option"
+    }
+  ],
+  "uk-junior": [
+    {
+      "subjectId": "english",
+      "group": "Core",
+      "status": "Core"
+    },
+    {
+      "subjectId": "mathematics",
+      "group": "Core",
+      "status": "Core"
+    },
+    {
+      "subjectId": "science",
+      "group": "Core",
+      "status": "Core"
+    },
+    {
+      "subjectId": "history",
+      "group": "Humanities",
+      "status": "Foundation"
+    },
+    {
+      "subjectId": "geography",
+      "group": "Humanities",
+      "status": "Foundation"
+    },
+    {
+      "subjectId": "modern-foreign-languages",
+      "group": "Languages",
+      "status": "Foundation"
+    },
+    {
+      "subjectId": "design-and-technology",
+      "group": "Technology",
+      "status": "Foundation"
+    },
+    {
+      "subjectId": "art-and-design",
+      "group": "Arts",
+      "status": "Foundation"
+    },
+    {
+      "subjectId": "music",
+      "group": "Arts",
+      "status": "Foundation"
+    },
+    {
+      "subjectId": "physical-education",
+      "group": "Health & Wellbeing",
+      "status": "Foundation"
+    },
+    {
+      "subjectId": "citizenship",
+      "group": "Humanities",
+      "status": "Foundation"
+    },
+    {
+      "subjectId": "computing",
+      "group": "Technology",
+      "status": "Foundation"
+    },
+    {
+      "subjectId": "religious-education",
+      "group": "Religion",
+      "status": "Required provision"
+    },
+    {
+      "subjectId": "relationships-sex-and-health-education",
+      "group": "Health & Wellbeing",
+      "status": "Required provision"
+    },
+    {
+      "subjectId": "pshe",
+      "group": "Health & Wellbeing",
+      "status": "School provision"
+    }
+  ],
+  "uk-senior": [
+    {
+      "subjectId": "english-language",
+      "group": "Core",
+      "status": "Core"
+    },
+    {
+      "subjectId": "english-literature",
+      "group": "Core",
+      "status": "English pathway"
+    },
+    {
+      "subjectId": "mathematics",
+      "group": "Core",
+      "status": "Core"
+    },
+    {
+      "subjectId": "combined-science",
+      "group": "Science",
+      "status": "Science route"
+    },
+    {
+      "subjectId": "biology",
+      "group": "Science",
+      "status": "Separate-science route"
+    },
+    {
+      "subjectId": "chemistry",
+      "group": "Science",
+      "status": "Separate-science route"
+    },
+    {
+      "subjectId": "physics",
+      "group": "Science",
+      "status": "Separate-science route"
+    },
+    {
+      "subjectId": "computing",
+      "group": "Technology",
+      "status": "Foundation"
+    },
+    {
+      "subjectId": "physical-education",
+      "group": "Health & Wellbeing",
+      "status": "Foundation"
+    },
+    {
+      "subjectId": "citizenship",
+      "group": "Humanities",
+      "status": "Foundation"
+    },
+    {
+      "subjectId": "religious-education",
+      "group": "Religion",
+      "status": "Required provision"
+    },
+    {
+      "subjectId": "relationships-sex-and-health-education",
+      "group": "Health & Wellbeing",
+      "status": "Required provision"
+    },
+    {
+      "subjectId": "pshe",
+      "group": "Health & Wellbeing",
+      "status": "School provision"
+    },
+    {
+      "subjectId": "history",
+      "group": "Humanities",
+      "status": "GCSE/IGCSE option"
+    },
+    {
+      "subjectId": "geography",
+      "group": "Humanities",
+      "status": "GCSE/IGCSE option"
+    },
+    {
+      "subjectId": "global-perspectives",
+      "group": "Humanities",
+      "status": "GCSE/IGCSE option"
+    },
+    {
+      "subjectId": "environmental-management",
+      "group": "Humanities",
+      "status": "GCSE/IGCSE option"
+    },
+    {
+      "subjectId": "sociology",
+      "group": "Humanities",
+      "status": "GCSE/IGCSE option"
+    },
+    {
+      "subjectId": "psychology",
+      "group": "Humanities",
+      "status": "GCSE/IGCSE option"
+    },
+    {
+      "subjectId": "art-and-design",
+      "group": "Arts",
+      "status": "GCSE/IGCSE option"
+    },
+    {
+      "subjectId": "music",
+      "group": "Arts",
+      "status": "GCSE/IGCSE option"
+    },
+    {
+      "subjectId": "drama",
+      "group": "Arts",
+      "status": "GCSE/IGCSE option"
+    },
+    {
+      "subjectId": "media-studies",
+      "group": "Arts",
+      "status": "GCSE/IGCSE option"
+    },
+    {
+      "subjectId": "world-literature",
+      "group": "Arts",
+      "status": "GCSE/IGCSE option"
+    },
+    {
+      "subjectId": "design-and-technology",
+      "group": "Technology",
+      "status": "GCSE/IGCSE option"
+    },
+    {
+      "subjectId": "computer-science",
+      "group": "Technology",
+      "status": "GCSE/IGCSE option"
+    },
+    {
+      "subjectId": "ict",
+      "group": "Technology",
+      "status": "GCSE/IGCSE option"
+    },
+    {
+      "subjectId": "food-preparation-and-nutrition",
+      "group": "Technology",
+      "status": "GCSE/IGCSE option"
+    },
+    {
+      "subjectId": "foods-nutrition",
+      "group": "Technology",
+      "status": "GCSE/IGCSE option"
+    },
+    {
+      "subjectId": "agriculture",
+      "group": "Technology",
+      "status": "GCSE/IGCSE option"
+    },
+    {
+      "subjectId": "marine-science",
+      "group": "Technology",
+      "status": "GCSE/IGCSE option"
+    },
+    {
+      "subjectId": "business",
+      "group": "Business",
+      "status": "GCSE/IGCSE option"
+    },
+    {
+      "subjectId": "accounting",
+      "group": "Business",
+      "status": "GCSE/IGCSE option"
+    },
+    {
+      "subjectId": "economics",
+      "group": "Business",
+      "status": "GCSE/IGCSE option"
+    },
+    {
+      "subjectId": "commerce",
+      "group": "Business",
+      "status": "GCSE/IGCSE option"
+    },
+    {
+      "subjectId": "enterprise",
+      "group": "Business",
+      "status": "GCSE/IGCSE option"
+    },
+    {
+      "subjectId": "travel-tourism",
+      "group": "Business",
+      "status": "GCSE/IGCSE option"
+    },
+    {
+      "subjectId": "additional-mathematics",
+      "group": "Mathematics options",
+      "status": "Board/school option"
+    },
+    {
+      "subjectId": "statistics",
+      "group": "Mathematics options",
+      "status": "Board/school option"
+    },
+    {
+      "subjectId": "further-mathematics",
+      "group": "Mathematics options",
+      "status": "Board/school option"
+    },
+    {
+      "subjectId": "french",
+      "group": "Languages",
+      "status": "IGCSE language option"
+    },
+    {
+      "subjectId": "german",
+      "group": "Languages",
+      "status": "IGCSE language option"
+    },
+    {
+      "subjectId": "spanish",
+      "group": "Languages",
+      "status": "IGCSE language option"
+    },
+    {
+      "subjectId": "arabic",
+      "group": "Languages",
+      "status": "IGCSE language option"
+    },
+    {
+      "subjectId": "chinese",
+      "group": "Languages",
+      "status": "IGCSE language option"
+    },
+    {
+      "subjectId": "latin",
+      "group": "Languages",
+      "status": "IGCSE language option"
+    },
+    {
+      "subjectId": "afrikaans",
+      "group": "Languages",
+      "status": "IGCSE language option"
+    },
+    {
+      "subjectId": "bahasa-indonesia",
+      "group": "Languages",
+      "status": "IGCSE language option"
+    },
+    {
+      "subjectId": "hindi",
+      "group": "Languages",
+      "status": "IGCSE language option"
+    },
+    {
+      "subjectId": "isizulu",
+      "group": "Languages",
+      "status": "IGCSE language option"
+    },
+    {
+      "subjectId": "italian",
+      "group": "Languages",
+      "status": "IGCSE language option"
+    },
+    {
+      "subjectId": "japanese",
+      "group": "Languages",
+      "status": "IGCSE language option"
+    },
+    {
+      "subjectId": "malay",
+      "group": "Languages",
+      "status": "IGCSE language option"
+    },
+    {
+      "subjectId": "portuguese",
+      "group": "Languages",
+      "status": "IGCSE language option"
+    },
+    {
+      "subjectId": "sanskrit",
+      "group": "Languages",
+      "status": "IGCSE language option"
+    },
+    {
+      "subjectId": "setswana",
+      "group": "Languages",
+      "status": "IGCSE language option"
+    },
+    {
+      "subjectId": "swahili",
+      "group": "Languages",
+      "status": "IGCSE language option"
+    },
+    {
+      "subjectId": "thai",
+      "group": "Languages",
+      "status": "IGCSE language option"
+    },
+    {
+      "subjectId": "turkish",
+      "group": "Languages",
+      "status": "IGCSE language option"
+    },
+    {
+      "subjectId": "urdu",
+      "group": "Languages",
+      "status": "IGCSE language option"
+    },
+    {
+      "subjectId": "vietnamese",
+      "group": "Languages",
+      "status": "IGCSE language option"
+    },
+    {
+      "subjectId": "religious-studies",
+      "group": "Religion & Regional",
+      "status": "IGCSE option"
+    },
+    {
+      "subjectId": "islamiyat",
+      "group": "Religion & Regional",
+      "status": "IGCSE option"
+    },
+    {
+      "subjectId": "pakistan-studies",
+      "group": "Religion & Regional",
+      "status": "IGCSE option"
+    }
+  ],
+  "uk-post16": [
+    {
+      "subjectId": "english-language",
+      "group": "English",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "english-literature",
+      "group": "English",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "english-language-and-literature",
+      "group": "English",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "english-general-paper",
+      "group": "English",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "mathematics",
+      "group": "Science & Mathematics",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "further-mathematics",
+      "group": "Science & Mathematics",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "biology",
+      "group": "Science & Mathematics",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "chemistry",
+      "group": "Science & Mathematics",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "physics",
+      "group": "Science & Mathematics",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "marine-science",
+      "group": "Science & Mathematics",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "environmental-management",
+      "group": "Science & Mathematics",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "history",
+      "group": "Humanities",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "european-history",
+      "group": "Humanities",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "international-history",
+      "group": "Humanities",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "us-history",
+      "group": "Humanities",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "geography",
+      "group": "Humanities",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "psychology",
+      "group": "Humanities",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "sociology",
+      "group": "Humanities",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "law",
+      "group": "Humanities",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "classical-studies",
+      "group": "Humanities",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "global-perspectives-research",
+      "group": "Humanities",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "thinking-skills",
+      "group": "Humanities",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "us-government-and-politics",
+      "group": "Humanities",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "business",
+      "group": "Business",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "accounting",
+      "group": "Business",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "economics",
+      "group": "Business",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "travel-tourism",
+      "group": "Business",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "computer-science",
+      "group": "Technology",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "information-technology",
+      "group": "Technology",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "design-and-technology",
+      "group": "Technology",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "digital-media-design",
+      "group": "Technology",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "art-and-design",
+      "group": "Arts & Sport",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "drama",
+      "group": "Arts & Sport",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "music",
+      "group": "Arts & Sport",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "media-studies",
+      "group": "Arts & Sport",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "sport-physical-education",
+      "group": "Arts & Sport",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "french",
+      "group": "Languages",
+      "status": "AS/A-level option"
+    },
+    {
+      "subjectId": "german",
+      "group": "Languages",
+      "status": "AS/A-level option"
+    },
+    {
+      "subjectId": "spanish",
+      "group": "Languages",
+      "status": "AS/A-level option"
+    },
+    {
+      "subjectId": "arabic",
+      "group": "Languages",
+      "status": "AS/A-level option"
+    },
+    {
+      "subjectId": "chinese",
+      "group": "Languages",
+      "status": "AS/A-level option"
+    },
+    {
+      "subjectId": "portuguese",
+      "group": "Languages",
+      "status": "AS/A-level option"
+    },
+    {
+      "subjectId": "tamil",
+      "group": "Languages",
+      "status": "AS/A-level option"
+    },
+    {
+      "subjectId": "urdu",
+      "group": "Languages",
+      "status": "AS/A-level option"
+    },
+    {
+      "subjectId": "afrikaans",
+      "group": "Languages",
+      "status": "AS/A-level option"
+    },
+    {
+      "subjectId": "biblical-studies",
+      "group": "Religion",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "hinduism",
+      "group": "Religion",
+      "status": "Post-16 option"
+    },
+    {
+      "subjectId": "islamic-studies",
+      "group": "Religion",
+      "status": "Post-16 option"
+    }
+  ]
+}

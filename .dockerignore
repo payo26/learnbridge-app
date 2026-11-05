@@ -1,0 +1,10 @@
+node_modules
+backend/node_modules
+.git
+.env
+*.log
+*.zip
+coverage-previews
+anatomy-previews
+anatomy-work
+render-coverage-previews.tsx

@@ -1,0 +1,2639 @@
+[
+  {
+    "id": "english-studies",
+    "name": "English Studies",
+    "icon": "ES",
+    "topics": [
+      "Reading comprehension",
+      "Grammar and vocabulary",
+      "Writing and speaking"
+    ],
+    "lessons": [
+      {
+        "id": "0-0",
+        "title": "Sentence structure",
+        "text": "A complete sentence normally has a subject and a finite verb. In “The students revise daily”, “The students” is the subject and “revise” is the verb. A fragment such as “After the lesson” does not express a complete main clause.",
+        "q": "Which is a complete sentence?",
+        "choices": [
+          "After the lesson",
+          "The students revise daily",
+          "Because of the rain"
+        ],
+        "answer": 1,
+        "band": 0,
+        "minutes": 6
+      }
+    ]
+  },
+  {
+    "id": "mathematics",
+    "name": "Mathematics",
+    "icon": "M",
+    "topics": [
+      "Number and fractions",
+      "Algebra and patterns",
+      "Geometry and data"
+    ],
+    "lessons": [
+      {
+        "id": "1-0",
+        "title": "Fractions and proportion",
+        "text": "Equivalent fractions represent the same value: 1/2 = 2/4. To add fractions, use a common denominator. For example, 1/2 + 1/4 = 2/4 + 1/4 = 3/4. In a ratio, scale every part by the same factor to preserve the relationship.",
+        "q": "What is 1/2 + 1/4?",
+        "choices": [
+          "2/6",
+          "3/4",
+          "1/8"
+        ],
+        "answer": 1,
+        "band": 0,
+        "minutes": 6
+      }
+    ]
+  },
+  {
+    "id": "intermediate-science",
+    "name": "Intermediate Science",
+    "icon": "IS",
+    "topics": [
+      "Living things and cells",
+      "Matter and reactions",
+      "Energy, forces and investigations"
+    ],
+    "lessons": [
+      {
+        "id": "2-0",
+        "title": "A fair test",
+        "text": "A fair test changes one independent variable, measures a dependent variable and controls other relevant variables. When investigating how light affects plant growth, light is the independent variable and growth is the dependent variable. Repeat measurements to assess reliability.",
+        "q": "Which variable do you deliberately change?",
+        "choices": [
+          "Dependent variable",
+          "Independent variable",
+          "Control variable"
+        ],
+        "answer": 1,
+        "band": 0,
+        "minutes": 6
+      },
+      {
+        "id": "2-1",
+        "title": "Particles and states",
+        "text": "Solids have particles vibrating around fixed positions. Liquid particles remain close but move past one another. Gas particles are far apart and move freely. Melting and boiling are physical changes: the substance remains chemically the same.",
+        "q": "Why can a gas fill its container?",
+        "choices": [
+          "Its particles move freely",
+          "Its particles cannot move",
+          "Its particles are fixed"
+        ],
+        "answer": 0,
+        "band": 1,
+        "minutes": 8
+      },
+      {
+        "id": "2-2",
+        "title": "Energy transfers",
+        "text": "Energy can be transferred between stores, including kinetic, thermal, chemical and gravitational stores. Total energy is conserved, but some transfers make energy less useful, often by heating the surroundings. Efficiency = useful output energy / total input energy × 100%.",
+        "q": "A device uses 100 J and delivers 40 J of useful energy. Its efficiency is:",
+        "choices": [
+          "60%",
+          "40%",
+          "140%"
+        ],
+        "answer": 1,
+        "band": 2,
+        "minutes": 10
+      }
+    ]
+  },
+  {
+    "id": "physical-health-education",
+    "name": "Physical & Health Education",
+    "icon": "PH",
+    "topics": [
+      "Movement and fitness",
+      "Teamwork and games",
+      "Health and hygiene"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "digital-technologies",
+    "name": "Digital Technologies",
+    "icon": "DT",
+    "topics": [
+      "Digital safety",
+      "Data and productivity tools",
+      "Computational thinking"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "nigerian-history",
+    "name": "Nigerian History",
+    "icon": "NH",
+    "topics": [
+      "Sources and chronology",
+      "Nigerian societies and cultures",
+      "Colonial and post-independence change"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "social-and-citizenship-studies",
+    "name": "Social and Citizenship Studies",
+    "icon": "SA",
+    "topics": [
+      "Community and social values",
+      "Rights and responsibilities",
+      "Institutions and participation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "cultural-creative-arts",
+    "name": "Cultural & Creative Arts",
+    "icon": "CC",
+    "topics": [
+      "Visual expression",
+      "Music and rhythm",
+      "Drama and cultural practices"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "business-studies",
+    "name": "Business Studies",
+    "icon": "BS",
+    "topics": [
+      "Business activity",
+      "Office skills",
+      "Records and enterprise"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "nigerian-languages",
+    "name": "Nigerian Languages",
+    "icon": "NL",
+    "topics": [
+      "One Nigerian language: Hausa, Igbo, Yoruba or another school-supported language",
+      "Listening, speaking and reading",
+      "Writing and cultural heritage"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "christian-religious-studies",
+    "name": "Christian Religious Studies",
+    "icon": "CR",
+    "topics": [
+      "Biblical passages in context",
+      "Christian teachings",
+      "Ethics and practical compassion"
+    ],
+    "lessons": [
+      {
+        "id": "11-0",
+        "title": "The Good Samaritan",
+        "text": "In Luke 10:25–37, Jesus tells of a Samaritan who helps an injured traveller after others pass by. The story challenges narrow ideas about who counts as a neighbour. Reflect on practical compassion and how you can assist someone in need respectfully.",
+        "q": "Which action expresses the central lesson?",
+        "choices": [
+          "Helping a person in need",
+          "Ignoring an injured traveller",
+          "Helping only close friends"
+        ],
+        "answer": 0,
+        "band": 0,
+        "minutes": 6
+      },
+      {
+        "id": "11-1",
+        "title": "The Sermon on the Mount",
+        "text": "Matthew 5–7 includes teachings on mercy, peacemaking, prayer and conduct. The Beatitudes describe qualities such as humility and mercy. Study a passage in context, then distinguish what the text says from your personal application.",
+        "q": "Which quality is highlighted in the Beatitudes?",
+        "choices": [
+          "Mercy",
+          "Boasting",
+          "Revenge"
+        ],
+        "answer": 0,
+        "band": 1,
+        "minutes": 8
+      },
+      {
+        "id": "11-2",
+        "title": "Faith and works",
+        "text": "James 2:14–26 discusses the relationship between faith and action. The passage uses helping people lacking food or clothing to illustrate practical care. Christian traditions explain the relationship between faith, grace and works in different ways; compare interpretations respectfully.",
+        "q": "Which is an example of practical care discussed in this theme?",
+        "choices": [
+          "Offering food to someone in need",
+          "Only wishing them well without help",
+          "Seeking praise"
+        ],
+        "answer": 0,
+        "band": 2,
+        "minutes": 10
+      }
+    ]
+  },
+  {
+    "id": "islamic-studies",
+    "name": "Islamic Studies",
+    "icon": "IS",
+    "topics": [
+      "Qur’an and Hadith study",
+      "Beliefs and worship",
+      "Ethics and community"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "french",
+    "name": "French",
+    "icon": "F",
+    "topics": [
+      "Listening and speaking",
+      "Reading and vocabulary",
+      "Writing and cultural context"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "arabic",
+    "name": "Arabic",
+    "icon": "A",
+    "topics": [
+      "Listening and speaking",
+      "Reading and vocabulary",
+      "Writing and cultural context"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "solar-photovoltaic-installation-and-maintenance",
+    "name": "Solar Photovoltaic Installation and Maintenance",
+    "icon": "SP",
+    "topics": [
+      "Solar-energy principles",
+      "Components and diagrams",
+      "Safety and supervised maintenance"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "fashion-design-and-garment-making",
+    "name": "Fashion Design and Garment Making",
+    "icon": "FD",
+    "topics": [
+      "Design and measurements",
+      "Fabrics and patterns",
+      "Supervised sewing practice"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "livestock-farming",
+    "name": "Livestock Farming",
+    "icon": "LF",
+    "topics": [
+      "Animal needs",
+      "Housing and husbandry",
+      "Farm records and welfare"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "beauty-and-cosmetology",
+    "name": "Beauty and Cosmetology",
+    "icon": "BA",
+    "topics": [
+      "Hygiene and professional conduct",
+      "Materials and techniques",
+      "Client care and safety"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "computer-hardware-and-gsm-repairs",
+    "name": "Computer Hardware and GSM Repairs",
+    "icon": "CH",
+    "topics": [
+      "Device components",
+      "Diagnostic reasoning",
+      "Safe supervised repair"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "horticulture-and-crop-production",
+    "name": "Horticulture and Crop Production",
+    "icon": "HA",
+    "topics": [
+      "Plant propagation",
+      "Soil and watering",
+      "Crop care and records"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "english-language",
+    "name": "English Language",
+    "icon": "EL",
+    "topics": [
+      "Comprehension and summary",
+      "Writing for purpose",
+      "Grammar and spoken language"
+    ],
+    "lessons": [
+      {
+        "id": "0-0",
+        "title": "Sentence structure",
+        "text": "A complete sentence normally has a subject and a finite verb. In “The students revise daily”, “The students” is the subject and “revise” is the verb. A fragment such as “After the lesson” does not express a complete main clause.",
+        "q": "Which is a complete sentence?",
+        "choices": [
+          "After the lesson",
+          "The students revise daily",
+          "Because of the rain"
+        ],
+        "answer": 1,
+        "band": 0,
+        "minutes": 6
+      },
+      {
+        "id": "0-1",
+        "title": "Persuasive writing",
+        "text": "Persuasive writing presents a clear claim supported by reasons and evidence. A counterargument fairly describes an opposing view; a rebuttal explains why your claim still stands. Emotional language can engage a reader, but it cannot replace reliable evidence.",
+        "q": "What best strengthens a persuasive argument?",
+        "choices": [
+          "Unsupported exaggeration",
+          "Relevant evidence and reasons",
+          "Repeating a slogan"
+        ],
+        "answer": 1,
+        "band": 1,
+        "minutes": 8
+      },
+      {
+        "id": "0-2",
+        "title": "Analysing imagery",
+        "text": "Imagery evokes sensory experience. A metaphor directly describes one thing as another, while a simile compares using “like” or “as”. When analysing language, quote a short detail, identify the technique and explain its effect in context.",
+        "q": "Which expression is a metaphor?",
+        "choices": [
+          "The classroom was a beehive",
+          "As quiet as a mouse",
+          "He walked quickly"
+        ],
+        "answer": 0,
+        "band": 2,
+        "minutes": 10
+      }
+    ]
+  },
+  {
+    "id": "general-mathematics",
+    "name": "General Mathematics",
+    "icon": "GM",
+    "topics": [
+      "Algebra and equations",
+      "Geometry and trigonometry",
+      "Statistics and probability"
+    ],
+    "lessons": [
+      {
+        "id": "1-0",
+        "title": "Fractions and proportion",
+        "text": "Equivalent fractions represent the same value: 1/2 = 2/4. To add fractions, use a common denominator. For example, 1/2 + 1/4 = 2/4 + 1/4 = 3/4. In a ratio, scale every part by the same factor to preserve the relationship.",
+        "q": "What is 1/2 + 1/4?",
+        "choices": [
+          "2/6",
+          "3/4",
+          "1/8"
+        ],
+        "answer": 1,
+        "band": 0,
+        "minutes": 6
+      },
+      {
+        "id": "1-1",
+        "title": "Linear equations",
+        "text": "An equation states that two expressions are equal. Keep it balanced by applying the same operation to both sides. For 3x + 5 = 20, subtract 5 to obtain 3x = 15, then divide by 3 to get x = 5. Substitute the answer to check it.",
+        "q": "Solve 2x + 4 = 14.",
+        "choices": [
+          "x = 9",
+          "x = 5",
+          "x = 7"
+        ],
+        "answer": 1,
+        "band": 1,
+        "minutes": 8
+      },
+      {
+        "id": "1-2",
+        "title": "Quadratic equations",
+        "text": "A quadratic contains a squared variable. To solve x² − 5x + 6 = 0, factor it as (x − 2)(x − 3) = 0. The zero-product rule gives x = 2 or x = 3. Check each value in the original equation.",
+        "q": "What are the roots of x² − 5x + 6 = 0?",
+        "choices": [
+          "2 and 3",
+          "−2 and −3",
+          "1 and 6"
+        ],
+        "answer": 0,
+        "band": 2,
+        "minutes": 10
+      }
+    ]
+  },
+  {
+    "id": "citizenship-and-heritage-studies",
+    "name": "Citizenship and Heritage Studies",
+    "icon": "CA",
+    "topics": [
+      "Civic responsibility",
+      "Nigerian heritage",
+      "Democracy and national institutions"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "biology",
+    "name": "Biology",
+    "icon": "B",
+    "topics": [
+      "Cells and organisms",
+      "Plant and human processes",
+      "Ecology and inheritance"
+    ],
+    "lessons": [
+      {
+        "id": "4-0",
+        "title": "Cells and their functions",
+        "text": "Cells are basic units of living organisms. The cell membrane controls exchange, cytoplasm supports many reactions, and the nucleus contains genetic material in typical plant and animal cells. Plant cells also have a cellulose wall; photosynthetic cells contain chloroplasts.",
+        "q": "Which structure controls exchange with the surroundings?",
+        "choices": [
+          "Cell membrane",
+          "Cell wall only",
+          "Nucleus"
+        ],
+        "answer": 0,
+        "band": 0,
+        "minutes": 6
+      },
+      {
+        "id": "4-1",
+        "title": "Photosynthesis",
+        "text": "Photosynthesis uses light energy to make glucose from carbon dioxide and water, releasing oxygen. Chlorophyll absorbs light. Light intensity, carbon dioxide availability and temperature can limit the rate. Plants also respire, including at night.",
+        "q": "Which gas is taken in for photosynthesis?",
+        "choices": [
+          "Oxygen",
+          "Carbon dioxide",
+          "Nitrogen"
+        ],
+        "answer": 1,
+        "band": 1,
+        "minutes": 8
+      },
+      {
+        "id": "4-2",
+        "title": "Inheritance",
+        "text": "A gene is a region of DNA associated with a functional product; alleles are alternative versions. In a simple dominant–recessive model, Aa shows the dominant phenotype. Two heterozygous parents, Aa × Aa, produce expected genotypes AA, Aa, Aa and aa.",
+        "q": "In Aa × Aa, what is the expected probability of aa?",
+        "choices": [
+          "1/4",
+          "1/2",
+          "3/4"
+        ],
+        "answer": 0,
+        "band": 2,
+        "minutes": 10
+      }
+    ]
+  },
+  {
+    "id": "chemistry",
+    "name": "Chemistry",
+    "icon": "C",
+    "topics": [
+      "Atoms and bonding",
+      "Equations and reactions",
+      "Quantitative chemistry"
+    ],
+    "lessons": [
+      {
+        "id": "5-0",
+        "title": "Elements and compounds",
+        "text": "An element contains one type of atom. A compound contains different elements chemically bonded in fixed proportions. A mixture contains substances that are not chemically bonded together and can often be separated physically. Air is a mixture, while water is a compound.",
+        "q": "Which is a compound?",
+        "choices": [
+          "Air",
+          "Water",
+          "Iron"
+        ],
+        "answer": 1,
+        "band": 0,
+        "minutes": 6
+      },
+      {
+        "id": "5-1",
+        "title": "Balancing equations",
+        "text": "Chemical equations conserve atoms. Change coefficients, never formula subscripts, to balance an equation. Hydrogen and oxygen form water: 2H₂ + O₂ → 2H₂O. Both sides contain four hydrogen atoms and two oxygen atoms.",
+        "q": "Which equation is balanced?",
+        "choices": [
+          "H₂ + O₂ → H₂O",
+          "2H₂ + O₂ → 2H₂O",
+          "H₂ + 2O₂ → H₂O"
+        ],
+        "answer": 1,
+        "band": 1,
+        "minutes": 8
+      },
+      {
+        "id": "5-2",
+        "title": "Moles and mass",
+        "text": "The mole is a unit for amount of substance. Calculate amount using n = mass / molar mass. A 18 g sample of water with molar mass 18 g/mol contains 1 mol. Keep units consistent and use the balanced equation for reacting mole ratios.",
+        "q": "How many moles are in 44 g of CO₂ with molar mass 44 g/mol?",
+        "choices": [
+          "2 mol",
+          "1 mol",
+          "44 mol"
+        ],
+        "answer": 1,
+        "band": 2,
+        "minutes": 10
+      }
+    ]
+  },
+  {
+    "id": "physics",
+    "name": "Physics",
+    "icon": "P",
+    "topics": [
+      "Motion and forces",
+      "Energy and electricity",
+      "Waves and measurement"
+    ],
+    "lessons": [
+      {
+        "id": "6-0",
+        "title": "Speed and motion",
+        "text": "Average speed equals distance travelled divided by time taken. A student travelling 120 m in 30 s has average speed 4 m/s. Speed is a scalar; velocity includes direction. Always state units and convert them before calculating.",
+        "q": "What is the average speed for 100 m in 20 s?",
+        "choices": [
+          "5 m/s",
+          "20 m/s",
+          "2000 m/s"
+        ],
+        "answer": 0,
+        "band": 0,
+        "minutes": 6
+      },
+      {
+        "id": "6-1",
+        "title": "Forces and acceleration",
+        "text": "A resultant force changes velocity. Newton’s second law is F = ma: force in newtons, mass in kilograms and acceleration in m/s². A 2 kg object experiencing a resultant force of 6 N accelerates at 3 m/s².",
+        "q": "A 4 kg object has a resultant force of 8 N. Its acceleration is:",
+        "choices": [
+          "32 m/s²",
+          "2 m/s²",
+          "4 m/s²"
+        ],
+        "answer": 1,
+        "band": 1,
+        "minutes": 8
+      },
+      {
+        "id": "6-2",
+        "title": "Electric circuits",
+        "text": "Current is the rate of flow of charge. Potential difference transfers energy per unit charge. For an ohmic resistor at constant temperature, V = IR. With 12 V across a 6 Ω resistor, current is 2 A. In series, current is the same throughout.",
+        "q": "What current flows through 6 Ω at 12 V?",
+        "choices": [
+          "0.5 A",
+          "2 A",
+          "72 A"
+        ],
+        "answer": 1,
+        "band": 2,
+        "minutes": 10
+      }
+    ]
+  },
+  {
+    "id": "agriculture",
+    "name": "Agriculture",
+    "icon": "A",
+    "topics": [
+      "Soil and crop production",
+      "Animal production",
+      "Farm management and sustainability"
+    ],
+    "lessons": [
+      {
+        "id": "12-0",
+        "title": "Soil and plant growth",
+        "text": "Soil provides anchorage, water and nutrients for plants. Sandy soil drains quickly; clay often holds more water; loam combines particle sizes. Organic matter can improve soil structure and water retention. Suitable soil depends on the crop and growing conditions.",
+        "q": "Which addition can improve soil structure?",
+        "choices": [
+          "Organic matter",
+          "Plastic waste",
+          "Removing all plant residues"
+        ],
+        "answer": 0,
+        "band": 0,
+        "minutes": 6
+      },
+      {
+        "id": "12-1",
+        "title": "Crop rotation",
+        "text": "Crop rotation grows different crops on the same land in successive seasons. It can disrupt some pest cycles and help manage nutrients. Legumes with effective root-nodule bacteria can fix atmospheric nitrogen; residues may contribute nitrogen to later crops.",
+        "q": "One benefit of crop rotation is:",
+        "choices": [
+          "Disrupting some pest cycles",
+          "Guaranteeing no pests ever",
+          "Removing the need for all soil management"
+        ],
+        "answer": 0,
+        "band": 1,
+        "minutes": 8
+      },
+      {
+        "id": "12-2",
+        "title": "Integrated pest management",
+        "text": "Integrated pest management combines monitoring with cultural, biological and, when appropriate, chemical controls. Identify the pest and assess damage before acting. Use approved products according to their labels and avoid unnecessary pesticide application.",
+        "q": "What should come before choosing a pest control?",
+        "choices": [
+          "Identify and monitor the pest",
+          "Spray every day automatically",
+          "Ignore crop damage"
+        ],
+        "answer": 0,
+        "band": 2,
+        "minutes": 10
+      }
+    ]
+  },
+  {
+    "id": "further-mathematics",
+    "name": "Further Mathematics",
+    "icon": "FM",
+    "topics": [
+      "Sets and matrices",
+      "Advanced algebra",
+      "Calculus foundations"
+    ],
+    "lessons": [
+      {
+        "id": "8-0",
+        "title": "Sets and notation",
+        "text": "A set is a collection of distinct elements. The union A ∪ B contains elements in either set; the intersection A ∩ B contains elements in both. For A = {1,2,3} and B = {3,4}, their intersection is {3}.",
+        "q": "What is {1,2,3} ∩ {3,4}?",
+        "choices": [
+          "{1,2,3,4}",
+          "{3}",
+          "{1,2}"
+        ],
+        "answer": 1,
+        "band": 0,
+        "minutes": 6
+      },
+      {
+        "id": "8-1",
+        "title": "Matrices",
+        "text": "A matrix is a rectangular array of numbers. Add matrices of the same dimensions by adding corresponding entries. The determinant of a 2 × 2 matrix with rows [a,b] and [c,d] is ad − bc. A zero determinant means the matrix has no inverse.",
+        "q": "What is the determinant of rows [2,1] and [3,4]?",
+        "choices": [
+          "5",
+          "11",
+          "8"
+        ],
+        "answer": 0,
+        "band": 1,
+        "minutes": 8
+      },
+      {
+        "id": "8-2",
+        "title": "Differentiation",
+        "text": "A derivative measures instantaneous rate of change. The power rule gives d(xⁿ)/dx = nxⁿ⁻¹ for the usual polynomial cases. If y = x³, then dy/dx = 3x². At x = 2, the gradient is 12.",
+        "q": "What is the derivative of x³?",
+        "choices": [
+          "x²",
+          "3x²",
+          "3x³"
+        ],
+        "answer": 1,
+        "band": 2,
+        "minutes": 10
+      }
+    ]
+  },
+  {
+    "id": "physical-education",
+    "name": "Physical Education",
+    "icon": "PE",
+    "topics": [
+      "Movement and performance",
+      "Fitness and training",
+      "Sport and participation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "health-education",
+    "name": "Health Education",
+    "icon": "HE",
+    "topics": [
+      "Healthy living",
+      "Disease prevention",
+      "Community health"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "foods-nutrition",
+    "name": "Foods & Nutrition",
+    "icon": "FN",
+    "topics": [
+      "Nutrients and balanced diets",
+      "Food hygiene",
+      "Meal planning and preparation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "geography",
+    "name": "Geography",
+    "icon": "G",
+    "topics": [
+      "Maps and fieldwork",
+      "Physical processes",
+      "Population and environments"
+    ],
+    "lessons": [
+      {
+        "id": "7-0",
+        "title": "Map scale",
+        "text": "Map scale relates map distance to ground distance. A scale of 1:50,000 means 1 cm represents 50,000 cm, or 0.5 km. A 4 cm distance therefore represents 2 km. Straight-line distance may differ from distance along a road.",
+        "q": "At 1:50,000, what does 2 cm represent?",
+        "choices": [
+          "1 km",
+          "10 km",
+          "100 km"
+        ],
+        "answer": 0,
+        "band": 0,
+        "minutes": 6
+      },
+      {
+        "id": "7-1",
+        "title": "Weather and climate",
+        "text": "Weather describes short-term atmospheric conditions; climate describes patterns over many years. Rainfall, temperature and wind help describe both. A single hot day does not establish a long-term climate trend; use records covering sufficiently long periods.",
+        "q": "Which describes climate?",
+        "choices": [
+          "Rain this morning",
+          "Long-term rainfall patterns",
+          "Wind in the next hour"
+        ],
+        "answer": 1,
+        "band": 1,
+        "minutes": 8
+      },
+      {
+        "id": "7-2",
+        "title": "Urbanisation",
+        "text": "Urbanisation is an increasing proportion of people living in urban areas. Migration and natural increase can contribute. Cities offer jobs and services, but rapid growth can strain housing, transport and water systems. Compare benefits and challenges using local evidence.",
+        "q": "Urbanisation refers to:",
+        "choices": [
+          "An increasing urban population share",
+          "Only building more farms",
+          "A daily weather change"
+        ],
+        "answer": 0,
+        "band": 2,
+        "minutes": 10
+      }
+    ]
+  },
+  {
+    "id": "technical-drawing",
+    "name": "Technical Drawing",
+    "icon": "TD",
+    "topics": [
+      "Drawing instruments and conventions",
+      "Orthographic views",
+      "Dimensioning and geometry"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "government",
+    "name": "Government",
+    "icon": "G",
+    "topics": [
+      "Political institutions",
+      "Constitutions and citizenship",
+      "Public policy and participation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "visual-arts",
+    "name": "Visual Arts",
+    "icon": "VA",
+    "topics": [
+      "Drawing and composition",
+      "Colour and materials",
+      "Art interpretation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "music",
+    "name": "Music",
+    "icon": "M",
+    "topics": [
+      "Rhythm and notation",
+      "Listening and composition",
+      "Performance and musical traditions"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "literature-in-english",
+    "name": "Literature in English",
+    "icon": "LI",
+    "topics": [
+      "Poetry and imagery",
+      "Drama and character",
+      "Prose and critical response"
+    ],
+    "lessons": [
+      {
+        "id": "0-0",
+        "title": "Sentence structure",
+        "text": "A complete sentence normally has a subject and a finite verb. In “The students revise daily”, “The students” is the subject and “revise” is the verb. A fragment such as “After the lesson” does not express a complete main clause.",
+        "q": "Which is a complete sentence?",
+        "choices": [
+          "After the lesson",
+          "The students revise daily",
+          "Because of the rain"
+        ],
+        "answer": 1,
+        "band": 0,
+        "minutes": 6
+      },
+      {
+        "id": "0-1",
+        "title": "Persuasive writing",
+        "text": "Persuasive writing presents a clear claim supported by reasons and evidence. A counterargument fairly describes an opposing view; a rebuttal explains why your claim still stands. Emotional language can engage a reader, but it cannot replace reliable evidence.",
+        "q": "What best strengthens a persuasive argument?",
+        "choices": [
+          "Unsupported exaggeration",
+          "Relevant evidence and reasons",
+          "Repeating a slogan"
+        ],
+        "answer": 1,
+        "band": 1,
+        "minutes": 8
+      },
+      {
+        "id": "0-2",
+        "title": "Analysing imagery",
+        "text": "Imagery evokes sensory experience. A metaphor directly describes one thing as another, while a simile compares using “like” or “as”. When analysing language, quote a short detail, identify the technique and explain its effect in context.",
+        "q": "Which expression is a metaphor?",
+        "choices": [
+          "The classroom was a beehive",
+          "As quiet as a mouse",
+          "He walked quickly"
+        ],
+        "answer": 0,
+        "band": 2,
+        "minutes": 10
+      }
+    ]
+  },
+  {
+    "id": "home-management",
+    "name": "Home Management",
+    "icon": "HM",
+    "topics": [
+      "Household resources",
+      "Consumer decisions",
+      "Planning and organisation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "catering-craft",
+    "name": "Catering Craft",
+    "icon": "CC",
+    "topics": [
+      "Food hygiene",
+      "Kitchen organisation",
+      "Service and menu planning"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "accounting",
+    "name": "Accounting",
+    "icon": "A",
+    "topics": [
+      "Accounting equation",
+      "Double-entry records",
+      "Financial statements"
+    ],
+    "lessons": [
+      {
+        "id": "10-0",
+        "title": "The accounting equation",
+        "text": "The accounting equation is Assets = Liabilities + Equity. Assets are resources controlled by a business; liabilities are obligations. If assets total ₦100,000 and liabilities total ₦40,000, equity is ₦60,000. The equation remains balanced after recorded transactions.",
+        "q": "Assets are ₦100,000 and liabilities ₦40,000. Equity is:",
+        "choices": [
+          "₦140,000",
+          "₦60,000",
+          "₦40,000"
+        ],
+        "answer": 1,
+        "band": 0,
+        "minutes": 6
+      },
+      {
+        "id": "10-1",
+        "title": "Double-entry bookkeeping",
+        "text": "Every transaction has equal debit and credit entries. An increase in an asset is normally a debit; an increase in a liability is normally a credit. Buying equipment with cash debits equipment and credits cash, exchanging one asset for another.",
+        "q": "Equipment bought for cash is recorded as:",
+        "choices": [
+          "Debit equipment, credit cash",
+          "Debit cash, credit equipment",
+          "Credit both accounts"
+        ],
+        "answer": 0,
+        "band": 1,
+        "minutes": 8
+      },
+      {
+        "id": "10-2",
+        "title": "Profit and cash flow",
+        "text": "Profit and cash are different. Gross profit equals sales revenue minus cost of sales. Net profit also accounts for other expenses. Credit sales can increase profit before cash is collected, so a profitable business can still face a cash shortage.",
+        "q": "Sales are ₦80,000 and cost of sales ₦50,000. Gross profit is:",
+        "choices": [
+          "₦130,000",
+          "₦30,000",
+          "₦50,000"
+        ],
+        "answer": 1,
+        "band": 2,
+        "minutes": 10
+      }
+    ]
+  },
+  {
+    "id": "commerce",
+    "name": "Commerce",
+    "icon": "C",
+    "topics": [
+      "Trade and distribution",
+      "Business services",
+      "Consumers and enterprises"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "marketing",
+    "name": "Marketing",
+    "icon": "M",
+    "topics": [
+      "Customer needs",
+      "Marketing mix",
+      "Research and promotion"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "economics",
+    "name": "Economics",
+    "icon": "E",
+    "topics": [
+      "Scarcity and choice",
+      "Markets and prices",
+      "Macroeconomic indicators"
+    ],
+    "lessons": [
+      {
+        "id": "9-0",
+        "title": "Scarcity and choice",
+        "text": "Scarcity means resources are limited relative to wants. Choices therefore involve trade-offs. Opportunity cost is the value of the next best alternative forgone. If you choose study time over your next best option of playing sport, the forgone sporting benefit is the opportunity cost.",
+        "q": "Opportunity cost is:",
+        "choices": [
+          "Every alternative combined",
+          "The next best alternative forgone",
+          "Always the money paid"
+        ],
+        "answer": 1,
+        "band": 0,
+        "minutes": 6
+      },
+      {
+        "id": "9-1",
+        "title": "Demand and supply",
+        "text": "Demand describes quantities consumers are willing and able to buy at different prices. Other things equal, a higher price usually reduces quantity demanded. A change in the good’s own price causes movement along the demand curve; income or preferences can shift it.",
+        "q": "A change in a good’s own price causes:",
+        "choices": [
+          "Movement along its demand curve",
+          "Always a demand-curve shift",
+          "No effect on quantity demanded"
+        ],
+        "answer": 0,
+        "band": 1,
+        "minutes": 8
+      },
+      {
+        "id": "9-2",
+        "title": "Inflation",
+        "text": "Inflation is a sustained increase in the general price level. It reduces the purchasing power of money. A rise in the price of one item alone is not enough to establish general inflation. Causes can include rising demand or production costs.",
+        "q": "Inflation generally reduces:",
+        "choices": [
+          "Purchasing power of money",
+          "All prices immediately",
+          "The number of notes in circulation by definition"
+        ],
+        "answer": 0,
+        "band": 2,
+        "minutes": 10
+      }
+    ]
+  },
+  {
+    "id": "basic-science",
+    "name": "Basic Science",
+    "icon": "BS",
+    "topics": [
+      "Scientific enquiry",
+      "Living things",
+      "Matter and energy"
+    ],
+    "lessons": [
+      {
+        "id": "2-0",
+        "title": "A fair test",
+        "text": "A fair test changes one independent variable, measures a dependent variable and controls other relevant variables. When investigating how light affects plant growth, light is the independent variable and growth is the dependent variable. Repeat measurements to assess reliability.",
+        "q": "Which variable do you deliberately change?",
+        "choices": [
+          "Dependent variable",
+          "Independent variable",
+          "Control variable"
+        ],
+        "answer": 1,
+        "band": 0,
+        "minutes": 6
+      },
+      {
+        "id": "2-1",
+        "title": "Particles and states",
+        "text": "Solids have particles vibrating around fixed positions. Liquid particles remain close but move past one another. Gas particles are far apart and move freely. Melting and boiling are physical changes: the substance remains chemically the same.",
+        "q": "Why can a gas fill its container?",
+        "choices": [
+          "Its particles move freely",
+          "Its particles cannot move",
+          "Its particles are fixed"
+        ],
+        "answer": 0,
+        "band": 1,
+        "minutes": 8
+      },
+      {
+        "id": "2-2",
+        "title": "Energy transfers",
+        "text": "Energy can be transferred between stores, including kinetic, thermal, chemical and gravitational stores. Total energy is conserved, but some transfers make energy less useful, often by heating the surroundings. Efficiency = useful output energy / total input energy × 100%.",
+        "q": "A device uses 100 J and delivers 40 J of useful energy. Its efficiency is:",
+        "choices": [
+          "60%",
+          "40%",
+          "140%"
+        ],
+        "answer": 1,
+        "band": 2,
+        "minutes": 10
+      }
+    ]
+  },
+  {
+    "id": "basic-technology",
+    "name": "Basic Technology",
+    "icon": "BT",
+    "topics": [
+      "Materials and tools",
+      "Design and drawing",
+      "Systems and safety"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "information-technology",
+    "name": "Information Technology",
+    "icon": "IT",
+    "topics": [
+      "Data and information systems",
+      "Digital applications",
+      "Networks and impacts"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "social-studies",
+    "name": "Social Studies",
+    "icon": "SS",
+    "topics": [
+      "People and communities",
+      "Culture and society",
+      "Social responsibility"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "civic-education",
+    "name": "Civic Education",
+    "icon": "CE",
+    "topics": [
+      "Rights and duties",
+      "Democratic institutions",
+      "Community participation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "security-education",
+    "name": "Security Education",
+    "icon": "SE",
+    "topics": [
+      "Personal safety",
+      "Identifying risk",
+      "Reporting concerns to trusted adults"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "home-economics",
+    "name": "Home Economics",
+    "icon": "HE",
+    "topics": [
+      "Food and nutrition",
+      "Clothing and textiles",
+      "Household management"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "entrepreneurship",
+    "name": "Entrepreneurship",
+    "icon": "E",
+    "topics": [
+      "Needs and opportunities",
+      "Planning a small enterprise",
+      "Costs and customers"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "computer-it",
+    "name": "Computer & IT",
+    "icon": "CI",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "data-processing",
+    "name": "Data Processing",
+    "icon": "DP",
+    "topics": [
+      "Data capture",
+      "Spreadsheets and databases",
+      "Information handling"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "air-conditioning-and-refrigeration",
+    "name": "Air Conditioning and Refrigeration",
+    "icon": "AC",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "animal-husbandry",
+    "name": "Animal Husbandry",
+    "icon": "AH",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "auto-body-repair-and-spray-painting",
+    "name": "Auto Body Repair and Spray Painting",
+    "icon": "AB",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "auto-electrical-works",
+    "name": "Auto Electrical Works",
+    "icon": "AE",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "auto-mechanical-works",
+    "name": "Auto Mechanical Works",
+    "icon": "AM",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "automobile-parts-merchandising",
+    "name": "Automobile Parts Merchandising",
+    "icon": "AP",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "basic-electricity",
+    "name": "Basic Electricity",
+    "icon": "BE",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "basic-electronics",
+    "name": "Basic Electronics",
+    "icon": "BE",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "block-laying-brick-laying-and-concrete-works",
+    "name": "Block Laying, Brick Laying and Concrete Works",
+    "icon": "BL",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "book-keeping",
+    "name": "Book Keeping",
+    "icon": "BK",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "building-construction",
+    "name": "Building Construction",
+    "icon": "BC",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "carpentry-and-joinery",
+    "name": "Carpentry and Joinery",
+    "icon": "CA",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "clothing-textiles",
+    "name": "Clothing & Textiles",
+    "icon": "CT",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "cosmetology",
+    "name": "Cosmetology",
+    "icon": "C",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "dyeing-and-bleaching",
+    "name": "Dyeing and Bleaching",
+    "icon": "DA",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "electrical-installation-and-maintenance",
+    "name": "Electrical Installation and Maintenance",
+    "icon": "EI",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "fisheries",
+    "name": "Fisheries",
+    "icon": "F",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "furniture-making",
+    "name": "Furniture Making",
+    "icon": "FM",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "garment-making",
+    "name": "Garment Making",
+    "icon": "GM",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "gsm-maintenance-and-repairs",
+    "name": "GSM Maintenance and Repairs",
+    "icon": "GM",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "insurance",
+    "name": "Insurance",
+    "icon": "I",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "keyboarding",
+    "name": "Keyboarding",
+    "icon": "K",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "leather-goods",
+    "name": "Leather Goods",
+    "icon": "LG",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "machine-woodworking",
+    "name": "Machine Woodworking",
+    "icon": "MW",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "metal-work",
+    "name": "Metal Work",
+    "icon": "MW",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "mining",
+    "name": "Mining",
+    "icon": "M",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "office-practice",
+    "name": "Office Practice",
+    "icon": "OP",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "painting-and-decoration",
+    "name": "Painting and Decoration",
+    "icon": "PA",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "photography",
+    "name": "Photography",
+    "icon": "P",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "plumbing-and-pipe-fitting",
+    "name": "Plumbing and Pipe Fitting",
+    "icon": "PA",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "printing-craft-practice",
+    "name": "Printing Craft Practice",
+    "icon": "PC",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "radio-television-and-electrical-work",
+    "name": "Radio, Television and Electrical Work",
+    "icon": "RT",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "salesmanship",
+    "name": "Salesmanship",
+    "icon": "S",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "store-keeping",
+    "name": "Store Keeping",
+    "icon": "SK",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "store-management",
+    "name": "Store Management",
+    "icon": "SM",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "textile-trade",
+    "name": "Textile Trade",
+    "icon": "TT",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "tie-and-dye-craft",
+    "name": "Tie and Dye Craft",
+    "icon": "TA",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "tourism",
+    "name": "Tourism",
+    "icon": "T",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "upholstery",
+    "name": "Upholstery",
+    "icon": "U",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "welding-and-fabrication",
+    "name": "Welding and Fabrication",
+    "icon": "WA",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "woodwork",
+    "name": "Woodwork",
+    "icon": "W",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "english",
+    "name": "English",
+    "icon": "E",
+    "topics": [
+      "Reading comprehension",
+      "Grammar and vocabulary",
+      "Writing and spoken language"
+    ],
+    "lessons": [
+      {
+        "id": "0-0",
+        "title": "Sentence structure",
+        "text": "A complete sentence normally has a subject and a finite verb. In “The students revise daily”, “The students” is the subject and “revise” is the verb. A fragment such as “After the lesson” does not express a complete main clause.",
+        "q": "Which is a complete sentence?",
+        "choices": [
+          "After the lesson",
+          "The students revise daily",
+          "Because of the rain"
+        ],
+        "answer": 1,
+        "band": 0,
+        "minutes": 6
+      }
+    ]
+  },
+  {
+    "id": "science",
+    "name": "Science",
+    "icon": "S",
+    "topics": [
+      "Biology foundations",
+      "Chemistry foundations",
+      "Physics and practical enquiry"
+    ],
+    "lessons": [
+      {
+        "id": "2-0",
+        "title": "A fair test",
+        "text": "A fair test changes one independent variable, measures a dependent variable and controls other relevant variables. When investigating how light affects plant growth, light is the independent variable and growth is the dependent variable. Repeat measurements to assess reliability.",
+        "q": "Which variable do you deliberately change?",
+        "choices": [
+          "Dependent variable",
+          "Independent variable",
+          "Control variable"
+        ],
+        "answer": 1,
+        "band": 0,
+        "minutes": 6
+      },
+      {
+        "id": "2-1",
+        "title": "Particles and states",
+        "text": "Solids have particles vibrating around fixed positions. Liquid particles remain close but move past one another. Gas particles are far apart and move freely. Melting and boiling are physical changes: the substance remains chemically the same.",
+        "q": "Why can a gas fill its container?",
+        "choices": [
+          "Its particles move freely",
+          "Its particles cannot move",
+          "Its particles are fixed"
+        ],
+        "answer": 0,
+        "band": 1,
+        "minutes": 8
+      },
+      {
+        "id": "2-2",
+        "title": "Energy transfers",
+        "text": "Energy can be transferred between stores, including kinetic, thermal, chemical and gravitational stores. Total energy is conserved, but some transfers make energy less useful, often by heating the surroundings. Efficiency = useful output energy / total input energy × 100%.",
+        "q": "A device uses 100 J and delivers 40 J of useful energy. Its efficiency is:",
+        "choices": [
+          "60%",
+          "40%",
+          "140%"
+        ],
+        "answer": 1,
+        "band": 2,
+        "minutes": 10
+      }
+    ]
+  },
+  {
+    "id": "history",
+    "name": "History",
+    "icon": "H",
+    "topics": [
+      "Evidence and interpretation",
+      "Chronology and causation",
+      "Change and continuity"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "modern-foreign-languages",
+    "name": "Modern Foreign Languages",
+    "icon": "MF",
+    "topics": [
+      "A school-selected modern foreign language",
+      "Listening, speaking, reading and writing",
+      "Vocabulary, grammar and cultural context"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "design-and-technology",
+    "name": "Design and Technology",
+    "icon": "DA",
+    "topics": [
+      "Design briefs",
+      "Materials and making",
+      "Testing and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "art-and-design",
+    "name": "Art and Design",
+    "icon": "AA",
+    "topics": [
+      "Drawing and composition",
+      "Materials and techniques",
+      "Art and design analysis"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "citizenship",
+    "name": "Citizenship",
+    "icon": "C",
+    "topics": [
+      "Rights and responsibilities",
+      "Democracy and law",
+      "Active participation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "computing",
+    "name": "Computing",
+    "icon": "C",
+    "topics": [
+      "Algorithms and programming",
+      "Computer systems",
+      "Digital literacy and safety"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "religious-education",
+    "name": "Religious Education",
+    "icon": "RE",
+    "topics": [
+      "Religions and worldviews",
+      "Beliefs and practices",
+      "Ethics and respectful discussion"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "relationships-sex-and-health-education",
+    "name": "Relationships, Sex and Health Education",
+    "icon": "RS",
+    "topics": [
+      "Respectful relationships",
+      "Personal safety and trusted support",
+      "Health and wellbeing"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "pshe",
+    "name": "PSHE",
+    "icon": "P",
+    "topics": [
+      "Personal wellbeing",
+      "Social responsibility",
+      "Money and careers"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "english-literature",
+    "name": "English Literature",
+    "icon": "EL",
+    "topics": [
+      "Poetry and imagery",
+      "Drama and character",
+      "Prose and critical response"
+    ],
+    "lessons": [
+      {
+        "id": "0-2",
+        "title": "Analysing imagery",
+        "text": "Imagery evokes sensory experience. A metaphor directly describes one thing as another, while a simile compares using “like” or “as”. When analysing language, quote a short detail, identify the technique and explain its effect in context.",
+        "q": "Which expression is a metaphor?",
+        "choices": [
+          "The classroom was a beehive",
+          "As quiet as a mouse",
+          "He walked quickly"
+        ],
+        "answer": 0,
+        "band": 2,
+        "minutes": 10
+      }
+    ]
+  },
+  {
+    "id": "combined-science",
+    "name": "Combined Science",
+    "icon": "CS",
+    "topics": [
+      "Biological systems",
+      "Chemical reactions",
+      "Forces, electricity and energy"
+    ],
+    "lessons": [
+      {
+        "id": "2-0",
+        "title": "A fair test",
+        "text": "A fair test changes one independent variable, measures a dependent variable and controls other relevant variables. When investigating how light affects plant growth, light is the independent variable and growth is the dependent variable. Repeat measurements to assess reliability.",
+        "q": "Which variable do you deliberately change?",
+        "choices": [
+          "Dependent variable",
+          "Independent variable",
+          "Control variable"
+        ],
+        "answer": 1,
+        "band": 0,
+        "minutes": 6
+      },
+      {
+        "id": "2-1",
+        "title": "Particles and states",
+        "text": "Solids have particles vibrating around fixed positions. Liquid particles remain close but move past one another. Gas particles are far apart and move freely. Melting and boiling are physical changes: the substance remains chemically the same.",
+        "q": "Why can a gas fill its container?",
+        "choices": [
+          "Its particles move freely",
+          "Its particles cannot move",
+          "Its particles are fixed"
+        ],
+        "answer": 0,
+        "band": 1,
+        "minutes": 8
+      },
+      {
+        "id": "2-2",
+        "title": "Energy transfers",
+        "text": "Energy can be transferred between stores, including kinetic, thermal, chemical and gravitational stores. Total energy is conserved, but some transfers make energy less useful, often by heating the surroundings. Efficiency = useful output energy / total input energy × 100%.",
+        "q": "A device uses 100 J and delivers 40 J of useful energy. Its efficiency is:",
+        "choices": [
+          "60%",
+          "40%",
+          "140%"
+        ],
+        "answer": 1,
+        "band": 2,
+        "minutes": 10
+      }
+    ]
+  },
+  {
+    "id": "global-perspectives",
+    "name": "Global Perspectives",
+    "icon": "GP",
+    "topics": [
+      "Source evaluation",
+      "Local and global issues",
+      "Research and action"
+    ],
+    "lessons": [
+      {
+        "id": "3-0",
+        "title": "Facts and opinions",
+        "text": "A factual claim can be checked against evidence. An opinion expresses a judgement or preference. “The survey included 40 students” is checkable; “This is the best school” depends on criteria and viewpoint. Some claims mix fact and opinion, so read carefully.",
+        "q": "Which is a checkable factual claim?",
+        "choices": [
+          "This is the best school",
+          "The survey included 40 students",
+          "Mathematics is the nicest subject"
+        ],
+        "answer": 1,
+        "band": 0,
+        "minutes": 6
+      },
+      {
+        "id": "3-1",
+        "title": "Evaluating sources",
+        "text": "Evaluate a source by examining its author, evidence, purpose, date and possible bias. Corroboration means comparing a claim with independent sources. A popular post is not automatically reliable; trace important claims to their original evidence.",
+        "q": "What does corroboration involve?",
+        "choices": [
+          "Counting likes",
+          "Comparing independent evidence",
+          "Ignoring the author"
+        ],
+        "answer": 1,
+        "band": 1,
+        "minutes": 8
+      },
+      {
+        "id": "3-2",
+        "title": "Local and global solutions",
+        "text": "A global issue can have different local causes and effects. Compare stakeholder perspectives and the likely costs, benefits and unintended effects of proposed solutions. An action plan should identify a goal, responsible people and a way to evaluate results.",
+        "q": "Which makes an action plan measurable?",
+        "choices": [
+          "An indicator of success",
+          "Only a slogan",
+          "No deadline or goal"
+        ],
+        "answer": 0,
+        "band": 2,
+        "minutes": 10
+      }
+    ]
+  },
+  {
+    "id": "environmental-management",
+    "name": "Environmental Management",
+    "icon": "EM",
+    "topics": [
+      "Ecosystems and resources",
+      "Human environmental impacts",
+      "Sustainable management"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "sociology",
+    "name": "Sociology",
+    "icon": "S",
+    "topics": [
+      "Socialisation and culture",
+      "Institutions and inequality",
+      "Research methods"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "psychology",
+    "name": "Psychology",
+    "icon": "P",
+    "topics": [
+      "Behaviour and cognition",
+      "Research methods",
+      "Evaluation of evidence"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "drama",
+    "name": "Drama",
+    "icon": "D",
+    "topics": [
+      "Character and voice",
+      "Performance and staging",
+      "Script interpretation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "media-studies",
+    "name": "Media Studies",
+    "icon": "MS",
+    "topics": [
+      "Media language",
+      "Representation and audiences",
+      "Industries and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "world-literature",
+    "name": "World Literature",
+    "icon": "WL",
+    "topics": [
+      "Comparative reading",
+      "Literary context",
+      "Critical response"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "computer-science",
+    "name": "Computer Science",
+    "icon": "CS",
+    "topics": [
+      "Algorithms and programming",
+      "Data representation",
+      "Hardware and networks"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "ict",
+    "name": "ICT",
+    "icon": "I",
+    "topics": [
+      "Digital applications",
+      "Data handling",
+      "Communication and safety"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "food-preparation-and-nutrition",
+    "name": "Food Preparation and Nutrition",
+    "icon": "FP",
+    "topics": [
+      "Food science",
+      "Food hygiene",
+      "Practical preparation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "marine-science",
+    "name": "Marine Science",
+    "icon": "MS",
+    "topics": [
+      "Marine ecosystems",
+      "Ocean processes",
+      "Resources and conservation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "business",
+    "name": "Business",
+    "icon": "B",
+    "topics": [
+      "Enterprise and organisation",
+      "Operations and finance",
+      "Marketing and strategy"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "enterprise",
+    "name": "Enterprise",
+    "icon": "E",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "travel-tourism",
+    "name": "Travel & Tourism",
+    "icon": "TT",
+    "topics": [
+      "Destinations and services",
+      "Tourism impacts",
+      "Customer needs"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "additional-mathematics",
+    "name": "Additional Mathematics",
+    "icon": "AM",
+    "topics": [
+      "Functions and algebra",
+      "Trigonometry",
+      "Calculus foundations"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "statistics",
+    "name": "Statistics",
+    "icon": "S",
+    "topics": [
+      "Data collection",
+      "Probability",
+      "Statistical interpretation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "german",
+    "name": "German",
+    "icon": "G",
+    "topics": [
+      "Listening and speaking",
+      "Reading and vocabulary",
+      "Writing and cultural context"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "spanish",
+    "name": "Spanish",
+    "icon": "S",
+    "topics": [
+      "Listening and speaking",
+      "Reading and vocabulary",
+      "Writing and cultural context"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "chinese",
+    "name": "Chinese",
+    "icon": "C",
+    "topics": [
+      "Listening and speaking",
+      "Reading and vocabulary",
+      "Writing and cultural context"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "latin",
+    "name": "Latin",
+    "icon": "L",
+    "topics": [
+      "Listening and speaking",
+      "Reading and vocabulary",
+      "Writing and cultural context"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "afrikaans",
+    "name": "Afrikaans",
+    "icon": "A",
+    "topics": [
+      "Listening and speaking",
+      "Reading and vocabulary",
+      "Writing and cultural context"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "bahasa-indonesia",
+    "name": "Bahasa Indonesia",
+    "icon": "BI",
+    "topics": [
+      "Listening and speaking",
+      "Reading and vocabulary",
+      "Writing and cultural context"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "hindi",
+    "name": "Hindi",
+    "icon": "H",
+    "topics": [
+      "Listening and speaking",
+      "Reading and vocabulary",
+      "Writing and cultural context"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "isizulu",
+    "name": "IsiZulu",
+    "icon": "I",
+    "topics": [
+      "Listening and speaking",
+      "Reading and vocabulary",
+      "Writing and cultural context"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "italian",
+    "name": "Italian",
+    "icon": "I",
+    "topics": [
+      "Listening and speaking",
+      "Reading and vocabulary",
+      "Writing and cultural context"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "japanese",
+    "name": "Japanese",
+    "icon": "J",
+    "topics": [
+      "Listening and speaking",
+      "Reading and vocabulary",
+      "Writing and cultural context"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "malay",
+    "name": "Malay",
+    "icon": "M",
+    "topics": [
+      "Listening and speaking",
+      "Reading and vocabulary",
+      "Writing and cultural context"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "portuguese",
+    "name": "Portuguese",
+    "icon": "P",
+    "topics": [
+      "Listening and speaking",
+      "Reading and vocabulary",
+      "Writing and cultural context"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "sanskrit",
+    "name": "Sanskrit",
+    "icon": "S",
+    "topics": [
+      "Listening and speaking",
+      "Reading and vocabulary",
+      "Writing and cultural context"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "setswana",
+    "name": "Setswana",
+    "icon": "S",
+    "topics": [
+      "Listening and speaking",
+      "Reading and vocabulary",
+      "Writing and cultural context"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "swahili",
+    "name": "Swahili",
+    "icon": "S",
+    "topics": [
+      "Listening and speaking",
+      "Reading and vocabulary",
+      "Writing and cultural context"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "thai",
+    "name": "Thai",
+    "icon": "T",
+    "topics": [
+      "Listening and speaking",
+      "Reading and vocabulary",
+      "Writing and cultural context"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "turkish",
+    "name": "Turkish",
+    "icon": "T",
+    "topics": [
+      "Listening and speaking",
+      "Reading and vocabulary",
+      "Writing and cultural context"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "urdu",
+    "name": "Urdu",
+    "icon": "U",
+    "topics": [
+      "Listening and speaking",
+      "Reading and vocabulary",
+      "Writing and cultural context"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "vietnamese",
+    "name": "Vietnamese",
+    "icon": "V",
+    "topics": [
+      "Listening and speaking",
+      "Reading and vocabulary",
+      "Writing and cultural context"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "religious-studies",
+    "name": "Religious Studies",
+    "icon": "RS",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "islamiyat",
+    "name": "Islamiyat",
+    "icon": "I",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "pakistan-studies",
+    "name": "Pakistan Studies",
+    "icon": "PS",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "english-language-and-literature",
+    "name": "English Language and Literature",
+    "icon": "EL",
+    "topics": [
+      "Listening and speaking",
+      "Reading and vocabulary",
+      "Writing and cultural context"
+    ],
+    "lessons": [
+      {
+        "id": "0-0",
+        "title": "Sentence structure",
+        "text": "A complete sentence normally has a subject and a finite verb. In “The students revise daily”, “The students” is the subject and “revise” is the verb. A fragment such as “After the lesson” does not express a complete main clause.",
+        "q": "Which is a complete sentence?",
+        "choices": [
+          "After the lesson",
+          "The students revise daily",
+          "Because of the rain"
+        ],
+        "answer": 1,
+        "band": 0,
+        "minutes": 6
+      },
+      {
+        "id": "0-1",
+        "title": "Persuasive writing",
+        "text": "Persuasive writing presents a clear claim supported by reasons and evidence. A counterargument fairly describes an opposing view; a rebuttal explains why your claim still stands. Emotional language can engage a reader, but it cannot replace reliable evidence.",
+        "q": "What best strengthens a persuasive argument?",
+        "choices": [
+          "Unsupported exaggeration",
+          "Relevant evidence and reasons",
+          "Repeating a slogan"
+        ],
+        "answer": 1,
+        "band": 1,
+        "minutes": 8
+      },
+      {
+        "id": "0-2",
+        "title": "Analysing imagery",
+        "text": "Imagery evokes sensory experience. A metaphor directly describes one thing as another, while a simile compares using “like” or “as”. When analysing language, quote a short detail, identify the technique and explain its effect in context.",
+        "q": "Which expression is a metaphor?",
+        "choices": [
+          "The classroom was a beehive",
+          "As quiet as a mouse",
+          "He walked quickly"
+        ],
+        "answer": 0,
+        "band": 2,
+        "minutes": 10
+      }
+    ]
+  },
+  {
+    "id": "english-general-paper",
+    "name": "English General Paper",
+    "icon": "EG",
+    "topics": [
+      "Argument and evidence",
+      "Contemporary issues",
+      "Clear academic writing"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "european-history",
+    "name": "European History",
+    "icon": "EH",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "international-history",
+    "name": "International History",
+    "icon": "IH",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "us-history",
+    "name": "US History",
+    "icon": "UH",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "law",
+    "name": "Law",
+    "icon": "L",
+    "topics": [
+      "Legal systems",
+      "Rights and obligations",
+      "Reasoning from cases"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "classical-studies",
+    "name": "Classical Studies",
+    "icon": "CS",
+    "topics": [
+      "Ancient societies",
+      "Literature and material evidence",
+      "Interpretation and context"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "global-perspectives-research",
+    "name": "Global Perspectives & Research",
+    "icon": "GP",
+    "topics": [
+      "Research questions",
+      "Evidence and arguments",
+      "Independent investigation"
+    ],
+    "lessons": [
+      {
+        "id": "3-0",
+        "title": "Facts and opinions",
+        "text": "A factual claim can be checked against evidence. An opinion expresses a judgement or preference. “The survey included 40 students” is checkable; “This is the best school” depends on criteria and viewpoint. Some claims mix fact and opinion, so read carefully.",
+        "q": "Which is a checkable factual claim?",
+        "choices": [
+          "This is the best school",
+          "The survey included 40 students",
+          "Mathematics is the nicest subject"
+        ],
+        "answer": 1,
+        "band": 0,
+        "minutes": 6
+      },
+      {
+        "id": "3-1",
+        "title": "Evaluating sources",
+        "text": "Evaluate a source by examining its author, evidence, purpose, date and possible bias. Corroboration means comparing a claim with independent sources. A popular post is not automatically reliable; trace important claims to their original evidence.",
+        "q": "What does corroboration involve?",
+        "choices": [
+          "Counting likes",
+          "Comparing independent evidence",
+          "Ignoring the author"
+        ],
+        "answer": 1,
+        "band": 1,
+        "minutes": 8
+      },
+      {
+        "id": "3-2",
+        "title": "Local and global solutions",
+        "text": "A global issue can have different local causes and effects. Compare stakeholder perspectives and the likely costs, benefits and unintended effects of proposed solutions. An action plan should identify a goal, responsible people and a way to evaluate results.",
+        "q": "Which makes an action plan measurable?",
+        "choices": [
+          "An indicator of success",
+          "Only a slogan",
+          "No deadline or goal"
+        ],
+        "answer": 0,
+        "band": 2,
+        "minutes": 10
+      }
+    ]
+  },
+  {
+    "id": "thinking-skills",
+    "name": "Thinking Skills",
+    "icon": "TS",
+    "topics": [
+      "Critical reasoning",
+      "Problem solving",
+      "Evidence and assumptions"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "us-government-and-politics",
+    "name": "US Government and Politics",
+    "icon": "UG",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "digital-media-design",
+    "name": "Digital Media & Design",
+    "icon": "DM",
+    "topics": [
+      "Creative briefs",
+      "Digital production",
+      "Portfolio evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "sport-physical-education",
+    "name": "Sport & Physical Education",
+    "icon": "SP",
+    "topics": [
+      "Key concepts and terminology",
+      "Applied skills and supervised practice",
+      "Evidence, records and evaluation"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "tamil",
+    "name": "Tamil",
+    "icon": "T",
+    "topics": [
+      "Listening and speaking",
+      "Reading and vocabulary",
+      "Writing and cultural context"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "biblical-studies",
+    "name": "Biblical Studies",
+    "icon": "BS",
+    "topics": [
+      "Biblical texts in context",
+      "Interpretation",
+      "Religious themes"
+    ],
+    "lessons": []
+  },
+  {
+    "id": "hinduism",
+    "name": "Hinduism",
+    "icon": "H",
+    "topics": [
+      "Beliefs and texts",
+      "Practices and traditions",
+      "Ethics and interpretations"
+    ],
+    "lessons": []
+  }
+]
