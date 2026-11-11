@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import { cleanEducationalText, isChemicalEquation, normalizeChemicalMath, renderMathML, splitMathText } from '../src/math-format.mjs';
 
 test('removes markdown and repeated escaping from generated lesson text',()=>{
@@ -45,6 +46,21 @@ test('treats a plain fractional equation as one expression',()=>{
   ]);
   const markup=renderMathML(segments[1].value);
   assert.equal((markup.match(/<mfrac>/g)||[]).length,2);
+});
+
+test('renders grouped scaling steps as one textbook fraction',()=>{
+  const expression='3/4 = (3×5)/(4×5) = 15/20';
+  const segments=splitMathText(expression);
+  assert.deepEqual(segments,[{type:'math',value:expression,display:false}]);
+  const markup=renderMathML(expression);
+  assert.equal((markup.match(/<mfrac>/g)||[]).length,3);
+  assert.match(markup,/<mfrac><mrow><mn>3<\/mn><mo>×<\/mo><mn>5<\/mn><\/mrow><mrow><mn>4<\/mn><mo>×<\/mo><mn>5<\/mn><\/mrow><\/mfrac>/);
+  assert.doesNotMatch(markup,/<mfrac><mrow><mo[^>]*>\)<\/mo>/);
+});
+
+test('generation rules show equivalent fractions with explicit numerator and denominator groups',async()=>{
+  const server=await readFile(new URL('../backend/server.mjs',import.meta.url),'utf8');
+  assert.ok(server.includes(String.raw`Correct equivalent-fraction model: \( \frac{3}{4} = \frac{3 \times 5}{4 \times 5} = \frac{15}{20} \).`));
 });
 
 test('normalises raw and plain chemical formula numbers as subscripts',()=>{

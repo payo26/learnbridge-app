@@ -12,6 +12,11 @@ const samples=[
     text:'Calculate 3/4x + 1/2x = 1.',
   },
   {
+    title:'Equivalent-fraction scaling',
+    description:'Grouped numerator and denominator calculations remain inside one fraction bar.',
+    text:'3/4 = (3×5)/(4×5) = 15/20',
+  },
+  {
     title:'Stretching round brackets',
     description:'Both brackets are in the same MathML row as the fraction.',
     text:String.raw`Simplify \( \left(\frac{x+1}{2}\right) + \frac{3}{5} \).`,

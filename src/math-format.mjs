@@ -30,6 +30,57 @@ function collapseMathBackslashes(value) {
   return result;
 }
 
+function matchingDelimiterIndex(value,start) {
+  const pairs={ '(':')', '[':']' };
+  const opening=value[start];
+  const closing=pairs[opening];
+  if(!closing)return -1;
+  let depth=0;
+  for(let index=start;index<value.length;index++) {
+    if(value[index]===opening)depth++;
+    else if(value[index]===closing) {
+      depth--;
+      if(depth===0)return index;
+    }
+  }
+  return -1;
+}
+
+// AI-authored and legacy notes sometimes express a complex fraction as
+// (numerator)/(denominator). Convert the grouping parentheses into a real
+// fraction before tokenisation; otherwise the infix slash sees only the two
+// adjacent brackets as its operands and scatters the equation.
+function normalizeGroupedSlashFractions(value) {
+  let result=String(value);
+  for(let pass=0;pass<4;pass++) {
+    let output='';
+    let cursor=0;
+    let changed=false;
+    for(let index=0;index<result.length;index++) {
+      if(result[index]!=='('&&result[index]!=='[')continue;
+      const numeratorEnd=matchingDelimiterIndex(result,index);
+      if(numeratorEnd<0)continue;
+      let slashIndex=numeratorEnd+1;
+      while(/\s/.test(result[slashIndex]||''))slashIndex++;
+      if(result[slashIndex]!=='/')continue;
+      let denominatorStart=slashIndex+1;
+      while(/\s/.test(result[denominatorStart]||''))denominatorStart++;
+      if(result[denominatorStart]!=='('&&result[denominatorStart]!=='[')continue;
+      const denominatorEnd=matchingDelimiterIndex(result,denominatorStart);
+      if(denominatorEnd<0)continue;
+      const numerator=result.slice(index+1,numeratorEnd);
+      const denominator=result.slice(denominatorStart+1,denominatorEnd);
+      output+=result.slice(cursor,index)+`\\frac{${numerator}}{${denominator}}`;
+      cursor=denominatorEnd+1;
+      index=denominatorEnd;
+      changed=true;
+    }
+    if(!changed)break;
+    result=output+result.slice(cursor);
+  }
+  return result;
+}
+
 const CHEMICAL_ELEMENT = String.raw`(?:Ac|Ag|Al|Am|Ar|As|At|Au|Ba|Be|Bh|Bi|Bk|Br|Ca|Cd|Ce|Cf|Cl|Cm|Cn|Co|Cr|Cs|Cu|Db|Ds|Dy|Er|Es|Eu|Fe|Fl|Fm|Fr|Ga|Gd|Ge|He|Hf|Hg|Ho|Hs|In|Ir|Kr|La|Li|Lr|Lu|Lv|Mc|Md|Mg|Mn|Mo|Mt|Na|Nb|Nd|Ne|Nh|Ni|No|Np|Og|Os|Pa|Pb|Pd|Pm|Po|Pr|Pt|Pu|Ra|Rb|Re|Rf|Rg|Rh|Rn|Ru|Sb|Sc|Se|Sg|Si|Sm|Sn|Sr|Ta|Tb|Tc|Te|Th|Ti|Tl|Tm|Ts|Xe|Yb|Zn|Zr|B|C|F|H|I|K|N|O|P|S|U|V|W|Y)`;
 const CHEMICAL_SUBSCRIPT = String.raw`(?:_\{?\d+\}?|[₀₁₂₃₄₅₆₇₈₉]+|\d+)`;
 const CHEMICAL_UNIT = String.raw`(?:${CHEMICAL_ELEMENT}(?:${CHEMICAL_SUBSCRIPT})?|\((?:${CHEMICAL_ELEMENT}(?:${CHEMICAL_SUBSCRIPT})?)+\)(?:${CHEMICAL_SUBSCRIPT})?)`;
@@ -83,7 +134,7 @@ export function cleanEducationalText(value) {
 function looksLikeEquation(value) {
   const text=value.trim();
   if(!text || text.length>220)return false;
-  const hasFraction=/\\frac\s*\{|(?<![\d/])\d{1,3}\s*\/\s*\d{1,3}(?![\d/])|[\u00bc-\u00be\u2150-\u215e]/u.test(text);
+  const hasFraction=/\\frac\s*\{|(?<![\d/])\d{1,3}\s*\/\s*\d{1,3}(?![\d/])|[\u00bc-\u00be\u2150-\u215e]|[)\]]\s*\/\s*[(\[]/u.test(text);
   const hasStructure=/[=+−×÷<>]|≤|≥|\\(?:times|cdot|div|leq?|geq?|neq?|sqrt)\b/.test(text);
   const ordinaryWords=(text.replace(/\\[A-Za-z]+/g,' ').match(/\b[A-Za-z]{3,}\b/g)||[]).length;
   return hasFraction&&hasStructure&&ordinaryWords<=1;
@@ -298,7 +349,7 @@ function accessibleMath(value) {
 }
 
 export function renderMathML(value,display=false) {
-  const input=collapseMathBackslashes(value).trim();
+  const input=normalizeGroupedSlashFractions(collapseMathBackslashes(value)).trim();
   const body=new MathParser(input).parse();
   const mode=display?'block':'inline';
   return `<math xmlns="http://www.w3.org/1998/Math/MathML" display="${mode}" aria-label="${escapeXml(accessibleMath(input))}"><mstyle displaystyle="true" scriptlevel="0"><mrow>${body}</mrow></mstyle></math>`;
