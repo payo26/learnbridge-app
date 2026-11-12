@@ -354,7 +354,7 @@ export default function NotesReader(p:Props) {
     async function load() {
       if(!selected)return;
       if(authLoading)return;
-      const cacheKey=['learnbridge-full-note-v8-coverage6-plantfix1',p.profile,p.year,p.subjectId,selected.id].join(':');
+      const cacheKey=['learnbridge-full-note-v8-coverage6-relevance1',p.profile,p.year,p.subjectId,selected.id].join(':');
       try {
         const cached=JSON.parse(localStorage.getItem(cacheKey)||'null') as {notes:Notes;provenance:string;rendererVersion?:number;cachedAt?:number}|null;
         if(cached?.notes?.sections?.length && cached.notes.quiz?.length && cached.notes.illustrationVersion===6

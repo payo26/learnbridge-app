@@ -9,7 +9,7 @@ import { partSchemas, validPart, assemble } from './note-parts.mjs';
 import { ILLUSTRATION_VERSION, illustrationSchema, illustrationTask, mapCatalog, validIllustrations } from './illustrations.mjs';
 import { specimenPromptCatalog } from '../shared/specimen-catalog.mjs';
 import { curatedIllustrationsForLesson, diagramCoverage, diagramCoverageTemplates, diagramRequirement } from './diagram-coverage.mjs';
-import { plantIllustrationDecision } from './plant-contamination.mjs';
+import { filterRelevantIllustrations } from './diagram-relevance.mjs';
 import { normalizeAiBaseURL } from './ai-endpoint.mjs';
 import { passwordRecoveryConfigured } from './password-email.mjs';
 import {
@@ -88,6 +88,31 @@ async function cachePut(cacheKey, value) {
   await pool.query(`INSERT INTO content_cache(cache_key,value,updated_at)
     VALUES($1,$2,NOW()) ON CONFLICT(cache_key) DO UPDATE SET value=EXCLUDED.value,updated_at=NOW()`,
     [cacheKey, value]);
+}
+async function sanitizeSavedIllustrations({noteKey,saved,input,subject,topic}) {
+  const notes=saved?.notes||{};
+  const requirement=diagramRequirement({subjectId:input.subjectId,subjectName:subject?.name||input.subjectId,topicTitle:topic?.title||'',notes});
+  const filtered=filterRelevantIllustrations({
+    subjectId:input.subjectId,
+    subjectName:subject?.name||input.subjectId,
+    topicTitle:topic?.title||'',
+    notes,
+    requirement,
+    illustrations:notes.illustrations,
+  });
+  if(!filtered.removed.length)return {saved,requirement,filtered,repaired:false};
+  const repairedNotes={...notes,illustrations:filtered.kept};
+  if(filtered.kept.length)repairedNotes.illustrationStatus='generated';
+  else if(requirement.required) {
+    delete repairedNotes.illustrationStatus;
+    delete repairedNotes.illustrationVersion;
+  } else {
+    repairedNotes.illustrationStatus='not-needed';
+    repairedNotes.illustrationVersion=ILLUSTRATION_VERSION;
+  }
+  const repaired={...saved,notes:repairedNotes};
+  await cachePut(noteKey,repaired);
+  return {saved:repaired,requirement,filtered,repaired:true};
 }
 async function generateJson({ system, prompt, schema, maxTokens = 3000 }) {
   const azure = Boolean(process.env.AZURE_OPENAI_ENDPOINT);
@@ -184,7 +209,7 @@ function sendServiceError(res, error) {
   return fail(res, 503, 'Lesson content is temporarily unavailable. Please retry.');
 }
 app.get('/api/health', async (_req, res) => {
-  try { await pool.query('SELECT 1'); res.json({ status:'ok', version:'8.0.9', seoStaticPages:210, seoIndexablePages:204, mathematicsRenderer:'native-mathml-1', chemistryRenderer:'native-mathml-1', diagramStandard:'audited-textbook-diagram-coverage', diagramCoverageAudit:true, curatedDiagramTemplates:diagramCoverageTemplates.length, anatomyPlateCount:10, azureApiRoute:'openai-v1', passwordRecoveryConfigured:passwordRecoveryConfigured(), curricula:['Nigerian','British'], britishFrameworks:['England KS3','England KS4 and GCSE','Cambridge IGCSE','Cambridge International AS & A Level'], illustrationVersion:ILLUSTRATION_VERSION, illustrationRendererVersion:6, database:'connected', aiConfigured:Boolean(process.env.AZURE_OPENAI_API_KEY || process.env.OPENAI_API_KEY), aiProvider:process.env.AZURE_OPENAI_ENDPOINT ? 'azure-openai' : 'openai', schoolLicensing:true, consumerSubscriptions:true, paymentsConfigured:paymentMode() !== 'not-configured', consumerPlansConfigured:consumerPlansConfigured(), paymentMode:paymentMode() }); }
+  try { await pool.query('SELECT 1'); res.json({ status:'ok', version:'8.0.10', seoStaticPages:210, seoIndexablePages:204, mathematicsRenderer:'native-mathml-1', chemistryRenderer:'native-mathml-1', diagramStandard:'audited-textbook-diagram-coverage', diagramCoverageAudit:true, diagramRelevanceAudit:true, curatedDiagramTemplates:diagramCoverageTemplates.length, anatomyPlateCount:10, azureApiRoute:'openai-v1', passwordRecoveryConfigured:passwordRecoveryConfigured(), curricula:['Nigerian','British'], britishFrameworks:['England KS3','England KS4 and GCSE','Cambridge IGCSE','Cambridge International AS & A Level'], illustrationVersion:ILLUSTRATION_VERSION, illustrationRendererVersion:6, database:'connected', aiConfigured:Boolean(process.env.AZURE_OPENAI_API_KEY || process.env.OPENAI_API_KEY), aiProvider:process.env.AZURE_OPENAI_ENDPOINT ? 'azure-openai' : 'openai', schoolLicensing:true, consumerSubscriptions:true, paymentsConfigured:paymentMode() !== 'not-configured', consumerPlansConfigured:consumerPlansConfigured(), paymentMode:paymentMode() }); }
   catch { fail(res, 503, 'Database unavailable'); }
 });
 app.post('/api/class-plan', async (req, res) => {
@@ -209,8 +234,13 @@ app.post('/api/lesson-notes', async (req, res) => {
       return res.json({ notes:fractionsNotes, provenance:'Built-in editorial lesson notes', complete:true });
     }
     const noteKey = key('note', input.profile, input.year, input.subjectId, input.topicId);
-    const saved = await cacheGet(noteKey);
-    if (saved?.notes?.sections?.length && saved.notes.quiz?.length) return res.json({ ...saved, provenance:'', complete:true });
+    let saved = await cacheGet(noteKey);
+    if (saved?.notes?.sections?.length && saved.notes.quiz?.length) {
+      const subject=subjects.find(candidate=>candidate.id===input.subjectId);
+      const sanitized=await sanitizeSavedIllustrations({noteKey,saved,input,subject,topic});
+      saved=sanitized.saved;
+      return res.json({ ...saved, provenance:'', complete:true });
+    }
     const part = req.body.part === undefined ? 0 : Number(req.body.part);
     if (!Number.isInteger(part) || part < 0 || part > 3) return fail(res, 400, 'Choose a valid lesson section.');
     const partKey = key(`part${part}`, input.profile, input.year, input.subjectId, input.topicId);
@@ -272,6 +302,7 @@ app.get('/api/diagram-audit', requirePreloadAccess, async (_req, res) => {
       const notes=row.value?.notes||{};
       const requirement=diagramRequirement({subjectId,subjectName:subject?.name||subjectId,topicTitle:topic?.title||'',notes});
       const coverage=diagramCoverage({illustrations:notes.illustrations,illustrationVersion:notes.illustrationVersion,requirement,currentVersion:ILLUSTRATION_VERSION});
+      const relevance=filterRelevantIllustrations({subjectId,subjectName:subject?.name||subjectId,topicTitle:topic?.title||'',notes,requirement,illustrations:notes.illustrations});
       lessons.push({
         ...input,
         subjectName:subject?.name||subjectId,
@@ -280,6 +311,9 @@ app.get('/api/diagram-audit', requirePreloadAccess, async (_req, res) => {
         reason:requirement.reason,
         templateId:requirement.templateId,
         coverageStatus:coverage.status,
+        misplacedDiagramCount:relevance.removed.length,
+        misplacedDiagrams:relevance.removed.map(item=>({title:item.illustration?.title||'',identifiedTemplate:item.identifiedTemplate,reason:item.reason})),
+        unclassifiedDiagramCount:relevance.unclassified.length,
         illustrationCount:coverage.count,
         illustrationVersion:notes.illustrationVersion||null,
         currentVersion:coverage.current,
@@ -289,8 +323,10 @@ app.get('/api/diagram-audit', requirePreloadAccess, async (_req, res) => {
       totals.total++;
       totals[lesson.coverageStatus]=(totals[lesson.coverageStatus]||0)+1;
       if(lesson.required)totals.required++;
+      if(lesson.misplacedDiagramCount)totals.lessonsWithMisplacedDiagrams++;
+      totals.misplacedDiagrams+=lesson.misplacedDiagramCount;
       return totals;
-    },{total:0,required:0,covered:0,missing:0,'optional-covered':0,'not-required':0});
+    },{total:0,required:0,covered:0,missing:0,'optional-covered':0,'not-required':0,lessonsWithMisplacedDiagrams:0,misplacedDiagrams:0});
     res.json({ illustrationVersion:ILLUSTRATION_VERSION,summary,lessons });
   } catch(error) { sendServiceError(res,error); }
 });
@@ -313,13 +349,16 @@ app.post(['/api/lesson-illustrations','/api/lesson-diagrams'], async (req, res) 
     }
     if (!saved?.notes?.sections?.length) return fail(res, 404, 'Generate and save the full lesson before adding illustrations.');
     const subject = subjects.find(s => s.id === input.subjectId);
-    const requirement=diagramRequirement({subjectId:input.subjectId,subjectName:subject?.name||input.subjectId,topicTitle:topic.title,notes:saved.notes});
+    const sanitized=await sanitizeSavedIllustrations({noteKey,saved,input,subject,topic});
+    saved=sanitized.saved;
+    const requirement=sanitized.requirement;
+    const coverage=diagramCoverage({illustrations:saved.notes.illustrations,illustrationVersion:saved.notes.illustrationVersion,requirement,currentVersion:ILLUSTRATION_VERSION});
     const forceRegeneration = req.body?.force === true && access.preloader === true;
     if (!forceRegeneration && saved.notes.illustrationVersion === ILLUSTRATION_VERSION && saved.notes.illustrationStatus && Array.isArray(saved.notes.illustrations)
-      && (saved.notes.illustrations.length > 0 || !requirement.required)) {
+      && coverage.status!=='missing' && (saved.notes.illustrations.length > 0 || !requirement.required)) {
       return res.json({ illustrations:saved.notes.illustrations, illustrationStatus:saved.notes.illustrationStatus, illustrationVersion:ILLUSTRATION_VERSION, required:requirement.required, cached:true });
     }
-    if (!forceRegeneration && Array.isArray(saved.notes.illustrations) && saved.notes.illustrations.length) {
+    if (!forceRegeneration && Array.isArray(saved.notes.illustrations) && saved.notes.illustrations.length && coverage.status!=='missing') {
       const notes={...saved.notes,illustrationVersion:ILLUSTRATION_VERSION,illustrationStatus:'generated'};
       await cachePut(noteKey,{...saved,notes});
       return res.json({illustrations:notes.illustrations,illustrationStatus:notes.illustrationStatus,illustrationVersion:ILLUSTRATION_VERSION,required:requirement.required,cached:true,upgraded:true});
@@ -361,16 +400,10 @@ app.post(['/api/lesson-illustrations','/api/lesson-diagrams'], async (req, res) 
       error.status = 503;
       throw error;
     }
-    if (generated.necessary && input.subjectId === 'biology') {
-      const unrelatedPlant=generated.illustrations.find(illustration=>!plantIllustrationDecision({
-        subjectId:input.subjectId,
-        subjectName:subject?.name||input.subjectId,
-        topicTitle:topic.title,
-        notes:saved.notes,
-        illustration,
-      }).keep);
-      if(unrelatedPlant) {
-        const error=new Error('The generated plant illustration does not match this Biology lesson. Retry to create the correct topic-specific diagram.');
+    if (generated.necessary) {
+      const relevance=filterRelevantIllustrations({subjectId:input.subjectId,subjectName:subject?.name||input.subjectId,topicTitle:topic.title,notes:saved.notes,requirement,illustrations:generated.illustrations});
+      if(relevance.removed.length) {
+        const error=new Error('The generated illustration does not match this lesson topic. Retry to create the correct topic-specific diagram.');
         error.status=503;
         throw error;
       }

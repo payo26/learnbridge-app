@@ -278,7 +278,7 @@ const ANATOMY=[
   { pattern:/\b(?:female reproductive system|female reproductive organs?|menstrual cycle anatomy)\b/i,id:'female-reproductive-system',labels:[['ovary','Ovary','left'],['fallopian-tube','Fallopian tube','right'],['uterus','Uterus','left'],['cervix','Cervix','right'],['vagina','Vagina','left']] },
 ];
 
-const VISUAL_KEYWORDS=/\b(?:map|scale drawing|contour|bearing|grid reference|relief|drainage|river profile|weather instrument|climate graph|plate tectonics?|volcano|fold(?:ing)?|fault(?:ing)?|erosion|landform|ecosystem|energy pyramid|ecological pyramid|carbon cycle|nitrogen cycle|flower structure|seed structure|germination|transpiration|osmosis|mitosis|meiosis|genetics? cross|punnett square|molecule|chemical bond|ionic bond|covalent bond|electrolysis|distillation|filtration|chromatography|titration|laboratory apparatus|reaction profile|periodic table|ray diagram|lens|mirror|waves?|magnetic field|transformer|lever|pulley|forces?|motion graph|velocity-time graph|distance-time graph|vector diagram|geometry|construction|triangle|quadrilateral|circle theorem|coordinate graph|transformation|venn diagram|probability tree|number line|solid shapes?|orthographic|isometric|projection|network topology|logic gates?|flowchart|computer architecture|demand curve|supply curve|market equilibrium|break-even|production possibility|organizational chart|life cycle|plant parts?|animal anatomy|fish anatomy|bird anatomy|livestock anatomy|farm tools?|irrigation system|crop rotation)\b/i;
+const VISUAL_KEYWORDS=/\b(?:map|scale drawing|contour|bearing|grid reference|relief|drainage|river profile|weather instrument|climate graph|plate tectonics?|volcano|fold(?:ing)?|fault(?:ing)?|erosion|landform|ecosystem|energy pyramid|ecological pyramid|carbon cycle|nitrogen cycle|flower structure|seed structure|germination|transpiration|osmosis|cell division|mitosis|meiosis|genetics? cross|punnett square|molecule|chemical bond|ionic bond|covalent bond|electrolysis|distillation|filtration|chromatography|titration|laboratory apparatus|reaction profile|periodic table|ray diagram|lens|mirror|waves?|magnetic field|transformer|lever|pulley|forces?|motion graph|velocity-time graph|distance-time graph|vector diagram|geometry|construction|triangle|quadrilateral|circle theorem|coordinate graph|transformation|venn diagram|probability tree|number line|solid shapes?|orthographic|isometric|projection|network topology|logic gates?|flowchart|computer architecture|demand curve|supply curve|market equilibrium|break-even|production possibility|organizational chart|life cycle|plant parts?|animal anatomy|fish anatomy|bird anatomy|livestock anatomy|farm tools?|irrigation system|crop rotation)\b/i;
 
 function compactText(notes) {
   return [
@@ -287,6 +287,14 @@ function compactText(notes) {
     ...(notes?.sections||[]).flatMap(section=>[section.heading,...(section.paragraphs||[])]),
     ...(notes?.summary||[]),
   ].filter(Boolean).join(' ').replace(/\s+/g,' ').slice(0,30000);
+}
+
+function compactFocus(notes) {
+  return [
+    ...(notes?.objectives||[]),
+    ...(notes?.keyTerms||[]).map(item=>item?.term),
+    ...(notes?.sections||[]).map(section=>section?.heading),
+  ].filter(Boolean).join(' ').replace(/\s+/g,' ').slice(0,12000);
 }
 
 function cellVariant(topicTitle,notes) {
@@ -317,6 +325,7 @@ function anatomyTemplate(rule) {
 export function diagramRequirement({subjectId='',subjectName='',topicTitle='',notes={}}={}) {
   const topic=String(topicTitle||'').trim();
   const lessonContent=compactText(notes);
+  const lessonFocus=compactFocus(notes);
 
   // The topic is the strongest signal of what the diagram must teach. Search it
   // before the wider note so a secondary mention (for example photosynthesis in
@@ -331,14 +340,19 @@ export function diagramRequirement({subjectId='',subjectName='',topicTitle='',no
   const topicAnatomyRule=ANATOMY.find(rule=>rule.pattern.test(topic));
   if(topicAnatomyRule)return { required:true,templateId:`anatomy:${topicAnatomyRule.id}`,reason:'The lesson teaches a human organ system and requires an anatomical plate.' };
 
+  // A concrete concept named in the topic must not be replaced by a bundled
+  // template that happens to be mentioned later in an example paragraph.
+  const topicVisual=topic.match(VISUAL_KEYWORDS)?.[0];
+  if(topicVisual)return { required:true,templateId:null,reason:`The lesson topic contains the diagram-dependent concept “${topicVisual}”.` };
+
   const content=`${topic} ${lessonContent}`;
-  for(const rule of CURATED) if(!rule.topicOnly&&rule.pattern.test(lessonContent)) return {
+  for(const rule of CURATED) if(!rule.topicOnly&&rule.pattern.test(lessonFocus)) return {
     required:true,
     templateId:rule.id,
     ...(rule.id==='cell-structure'?{variant:cellVariant(topic,notes)}:{}),
     reason:`The lesson teaches ${rule.id.replaceAll('-',' ')} and requires a concrete explanatory diagram.`,
   };
-  const anatomyRule=ANATOMY.find(rule=>rule.pattern.test(lessonContent));
+  const anatomyRule=ANATOMY.find(rule=>rule.pattern.test(lessonFocus));
   if(anatomyRule)return { required:true,templateId:`anatomy:${anatomyRule.id}`,reason:'The lesson teaches a human organ system and requires an anatomical plate.' };
   const match=content.match(VISUAL_KEYWORDS)?.[0];
   if(match)return { required:true,templateId:null,reason:`The lesson contains the diagram-dependent concept “${match}”.` };

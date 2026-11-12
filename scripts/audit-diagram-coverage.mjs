@@ -41,8 +41,10 @@ const summary=lessons.reduce((totals,item)=>{
   totals.total++;
   totals[item.coverageStatus]=(totals[item.coverageStatus]||0)+1;
   if(item.required)totals.required++;
+  if(item.misplacedDiagramCount)totals.lessonsWithMisplacedDiagrams++;
+  totals.misplacedDiagrams+=item.misplacedDiagramCount||0;
   return totals;
-},{total:0,required:0,covered:0,missing:0,'optional-covered':0,'not-required':0});
+},{total:0,required:0,covered:0,missing:0,'optional-covered':0,'not-required':0,lessonsWithMisplacedDiagrams:0,misplacedDiagrams:0});
 
 console.log('\nDiagram coverage audit');
 console.log(`  Saved lessons scanned: ${summary.total}`);
@@ -51,6 +53,16 @@ console.log(`  Covered required lessons: ${summary.covered}`);
 console.log(`  Missing required diagrams: ${summary.missing}`);
 console.log(`  Optional lessons with diagrams: ${summary['optional-covered']}`);
 console.log(`  Lessons not requiring diagrams: ${summary['not-required']}`);
+console.log(`  Lessons with misplaced known diagrams: ${summary.lessonsWithMisplacedDiagrams}`);
+console.log(`  Misplaced known diagrams: ${summary.misplacedDiagrams}`);
+
+const misplaced=lessons.filter(item=>item.misplacedDiagramCount>0);
+if(misplaced.length) {
+  console.log('\nMisplaced diagrams');
+  for(const item of misplaced)for(const diagram of item.misplacedDiagrams||[]) {
+    console.log(`  ${item.profile} Year ${item.year} | ${item.subjectName} | ${item.topicId} ${item.topicTitle} | ${diagram.title||diagram.identifiedTemplate} — ${diagram.reason}`);
+  }
+}
 
 const missing=lessons.filter(item=>item.coverageStatus==='missing');
 if(missing.length) {
