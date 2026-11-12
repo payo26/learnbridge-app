@@ -17,9 +17,15 @@ CREATE TABLE IF NOT EXISTS schools (
   status TEXT NOT NULL DEFAULT 'pending'
     CHECK (status IN ('pending','pilot','licensed','expired','suspended')),
   seat_limit INTEGER NOT NULL DEFAULT 0 CHECK (seat_limit >= 0),
+  licence_tier TEXT CHECK (licence_tier IN ('starter','growth','professional','enterprise')),
+  campus_count INTEGER NOT NULL DEFAULT 1 CHECK (campus_count BETWEEN 1 AND 10),
+  unlimited_teachers BOOLEAN NOT NULL DEFAULT TRUE,
+  unlimited_administrators BOOLEAN NOT NULL DEFAULT TRUE,
+  onboarding_mode TEXT NOT NULL DEFAULT 'remote'
+    CHECK (onboarding_mode IN ('remote','onsite','none')),
   licence_start_at TIMESTAMPTZ,
   licence_end_at TIMESTAMPTZ,
-  billing_period TEXT CHECK (billing_period IN ('monthly','termly','annual')),
+  billing_period TEXT CHECK (billing_period IN ('monthly','termly','annual','session')),
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -95,9 +101,17 @@ CREATE TABLE IF NOT EXISTS licence_quotes (
   title TEXT NOT NULL,
   amount_kobo INTEGER NOT NULL CHECK (amount_kobo > 0),
   currency TEXT NOT NULL DEFAULT 'NGN' CHECK (currency = 'NGN'),
-  billing_period TEXT NOT NULL CHECK (billing_period IN ('termly','annual')),
+  billing_period TEXT NOT NULL CHECK (billing_period IN ('termly','annual','session')),
   duration_days INTEGER NOT NULL CHECK (duration_days BETWEEN 1 AND 730),
   seat_limit INTEGER NOT NULL CHECK (seat_limit > 0),
+  tier_code TEXT CHECK (tier_code IN ('starter','growth','professional','enterprise')),
+  campus_count INTEGER NOT NULL DEFAULT 1 CHECK (campus_count BETWEEN 1 AND 10),
+  onboarding_mode TEXT NOT NULL DEFAULT 'remote'
+    CHECK (onboarding_mode IN ('remote','onsite','none')),
+  onboarding_fee_kobo BIGINT NOT NULL DEFAULT 0 CHECK (onboarding_fee_kobo >= 0),
+  unlimited_teachers BOOLEAN NOT NULL DEFAULT TRUE,
+  unlimited_administrators BOOLEAN NOT NULL DEFAULT TRUE,
+  notes TEXT NOT NULL DEFAULT '',
   status TEXT NOT NULL DEFAULT 'sent' CHECK (status IN ('draft','sent','paid','expired','cancelled')),
   expires_at TIMESTAMPTZ NOT NULL,
   created_by TEXT NOT NULL REFERENCES users(id),

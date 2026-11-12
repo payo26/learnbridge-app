@@ -10,6 +10,12 @@ import {
   sendPasswordChangedEmail,
   sendPasswordResetEmail,
 } from './password-email.mjs';
+import {
+  SCHOOL_LICENCE_TIERS,
+  normalSchoolBillingPeriod,
+  pilotConfiguration,
+  schoolLicenceQuote,
+} from './school-licensing.mjs';
 
 const scrypt = promisify(crypto.scrypt);
 const SESSION_COOKIE = 'lb_session';
@@ -91,6 +97,11 @@ function publicSchool(row) {
     accountType: row.account_type || 'school',
     status: row.school_status,
     seatLimit: row.seat_limit,
+    licenceTier: row.licence_tier,
+    campusCount: row.campus_count,
+    unlimitedTeachers: row.unlimited_teachers,
+    unlimitedAdministrators: row.unlimited_administrators,
+    onboardingMode: row.onboarding_mode,
     licenceStartAt: row.licence_start_at,
     licenceEndAt: row.licence_end_at,
     billingPeriod: row.billing_period,
@@ -127,7 +138,8 @@ async function createSession(pool, res, userId) {
 async function authRow(pool, userId) {
   const result = await pool.query(`SELECT u.id AS user_id,u.email,u.display_name,u.role,u.active,
       s.id AS school_id,s.name AS school_name,s.slug AS school_slug,s.status AS school_status,
-      s.account_type,s.seat_limit,s.licence_start_at,s.licence_end_at,s.billing_period
+      s.account_type,s.seat_limit,s.licence_tier,s.campus_count,s.unlimited_teachers,
+      s.unlimited_administrators,s.onboarding_mode,s.licence_start_at,s.licence_end_at,s.billing_period
     FROM users u LEFT JOIN schools s ON s.id=u.school_id WHERE u.id=$1`, [userId]);
   return result.rows[0];
 }
@@ -156,7 +168,33 @@ export async function ensurePlatformSchema(pool) {
     ALTER TABLE schools DROP CONSTRAINT IF EXISTS schools_account_type_check;
     ALTER TABLE schools ADD CONSTRAINT schools_account_type_check CHECK (account_type IN ('school','individual','family'));
     ALTER TABLE schools DROP CONSTRAINT IF EXISTS schools_billing_period_check;
-    ALTER TABLE schools ADD CONSTRAINT schools_billing_period_check CHECK (billing_period IN ('monthly','termly','annual'));
+    ALTER TABLE schools ADD CONSTRAINT schools_billing_period_check CHECK (billing_period IN ('monthly','termly','annual','session'));
+    ALTER TABLE schools ADD COLUMN IF NOT EXISTS licence_tier TEXT;
+    ALTER TABLE schools ADD COLUMN IF NOT EXISTS campus_count INTEGER NOT NULL DEFAULT 1;
+    ALTER TABLE schools ADD COLUMN IF NOT EXISTS unlimited_teachers BOOLEAN NOT NULL DEFAULT TRUE;
+    ALTER TABLE schools ADD COLUMN IF NOT EXISTS unlimited_administrators BOOLEAN NOT NULL DEFAULT TRUE;
+    ALTER TABLE schools ADD COLUMN IF NOT EXISTS onboarding_mode TEXT NOT NULL DEFAULT 'remote';
+    ALTER TABLE schools DROP CONSTRAINT IF EXISTS schools_licence_tier_check;
+    ALTER TABLE schools ADD CONSTRAINT schools_licence_tier_check CHECK (licence_tier IS NULL OR licence_tier IN ('starter','growth','professional','enterprise'));
+    ALTER TABLE schools DROP CONSTRAINT IF EXISTS schools_campus_count_check;
+    ALTER TABLE schools ADD CONSTRAINT schools_campus_count_check CHECK (campus_count BETWEEN 1 AND 10);
+    ALTER TABLE schools DROP CONSTRAINT IF EXISTS schools_onboarding_mode_check;
+    ALTER TABLE schools ADD CONSTRAINT schools_onboarding_mode_check CHECK (onboarding_mode IN ('remote','onsite','none'));
+    ALTER TABLE licence_quotes DROP CONSTRAINT IF EXISTS licence_quotes_billing_period_check;
+    ALTER TABLE licence_quotes ADD CONSTRAINT licence_quotes_billing_period_check CHECK (billing_period IN ('termly','annual','session'));
+    ALTER TABLE licence_quotes ADD COLUMN IF NOT EXISTS tier_code TEXT;
+    ALTER TABLE licence_quotes ADD COLUMN IF NOT EXISTS campus_count INTEGER NOT NULL DEFAULT 1;
+    ALTER TABLE licence_quotes ADD COLUMN IF NOT EXISTS onboarding_mode TEXT NOT NULL DEFAULT 'remote';
+    ALTER TABLE licence_quotes ADD COLUMN IF NOT EXISTS onboarding_fee_kobo BIGINT NOT NULL DEFAULT 0;
+    ALTER TABLE licence_quotes ADD COLUMN IF NOT EXISTS unlimited_teachers BOOLEAN NOT NULL DEFAULT TRUE;
+    ALTER TABLE licence_quotes ADD COLUMN IF NOT EXISTS unlimited_administrators BOOLEAN NOT NULL DEFAULT TRUE;
+    ALTER TABLE licence_quotes ADD COLUMN IF NOT EXISTS notes TEXT NOT NULL DEFAULT '';
+    ALTER TABLE licence_quotes DROP CONSTRAINT IF EXISTS licence_quotes_tier_code_check;
+    ALTER TABLE licence_quotes ADD CONSTRAINT licence_quotes_tier_code_check CHECK (tier_code IS NULL OR tier_code IN ('starter','growth','professional','enterprise'));
+    ALTER TABLE licence_quotes DROP CONSTRAINT IF EXISTS licence_quotes_campus_count_check;
+    ALTER TABLE licence_quotes ADD CONSTRAINT licence_quotes_campus_count_check CHECK (campus_count BETWEEN 1 AND 10);
+    ALTER TABLE licence_quotes DROP CONSTRAINT IF EXISTS licence_quotes_onboarding_mode_check;
+    ALTER TABLE licence_quotes ADD CONSTRAINT licence_quotes_onboarding_mode_check CHECK (onboarding_mode IN ('remote','onsite','none'));
     ALTER TABLE users ADD COLUMN IF NOT EXISTS terms_accepted_at TIMESTAMPTZ;
     ALTER TABLE users ADD COLUMN IF NOT EXISTS terms_version TEXT;
     ALTER TABLE users DROP CONSTRAINT IF EXISTS users_role_check;
@@ -226,6 +264,9 @@ async function schoolDashboard(pool, schoolId, includePrivate) {
       id: school.id, name: school.name, slug: school.slug, status: effectiveStatus,
       accountType: school.account_type || 'school',
       seatLimit: school.seat_limit, seatsUsed: Number(school.seats_used),
+      licenceTier: school.licence_tier, campusCount: school.campus_count,
+      unlimitedTeachers: school.unlimited_teachers, unlimitedAdministrators: school.unlimited_administrators,
+      onboardingMode: school.onboarding_mode,
       licenceStartAt: school.licence_start_at, licenceEndAt: school.licence_end_at,
       billingPeriod: school.billing_period, entitlement: schoolEntitlement,
     },
@@ -237,7 +278,10 @@ async function schoolDashboard(pool, schoolId, includePrivate) {
     pool.query(`SELECT id,role,email,max_uses AS "maxUses",use_count AS "useCount",expires_at AS "expiresAt",created_at AS "createdAt"
       FROM invitations WHERE school_id=$1 AND expires_at>NOW() AND use_count<max_uses ORDER BY created_at DESC`, [schoolId]),
     pool.query(`SELECT id,title,amount_kobo AS "amountKobo",currency,billing_period AS "billingPeriod",
-      duration_days AS "durationDays",seat_limit AS "seatLimit",status,expires_at AS "expiresAt",created_at AS "createdAt"
+      duration_days AS "durationDays",seat_limit AS "seatLimit",tier_code AS "tierCode",campus_count AS "campusCount",
+      onboarding_mode AS "onboardingMode",onboarding_fee_kobo AS "onboardingFeeKobo",
+      unlimited_teachers AS "unlimitedTeachers",unlimited_administrators AS "unlimitedAdministrators",notes,
+      status,expires_at AS "expiresAt",created_at AS "createdAt"
       FROM licence_quotes WHERE school_id=$1 ORDER BY created_at DESC`, [schoolId]),
     pool.query(`SELECT id,quote_id AS "quoteId",reference,amount_kobo AS "amountKobo",currency,status,
       paid_at AS "paidAt",created_at AS "createdAt" FROM payments WHERE school_id=$1 ORDER BY created_at DESC`, [schoolId]),
@@ -333,7 +377,8 @@ async function applySchoolPayment(pool, charge) {
   try {
     await client.query('BEGIN');
     const result = await client.query(`SELECT p.*,q.duration_days,q.seat_limit AS quote_seat_limit,
-        q.billing_period,q.status AS quote_status
+        q.billing_period,q.tier_code,q.campus_count,q.onboarding_mode,
+        q.unlimited_teachers,q.unlimited_administrators,q.status AS quote_status
       FROM payments p JOIN licence_quotes q ON q.id=p.quote_id WHERE p.reference=$1 FOR UPDATE`, [reference]);
     const payment = result.rows[0];
     if (!payment) throw new Error('The payment reference is not registered in LearnBridge.');
@@ -348,8 +393,11 @@ async function applySchoolPayment(pool, charge) {
       await client.query(`UPDATE schools SET status='licensed',
         licence_start_at=CASE WHEN licence_end_at IS NOT NULL AND licence_end_at>NOW() THEN COALESCE(licence_start_at,NOW()) ELSE NOW() END,
         licence_end_at=GREATEST(COALESCE(licence_end_at,NOW()),NOW()) + $2 * INTERVAL '1 day',
-        seat_limit=$3,billing_period=$4,updated_at=NOW() WHERE id=$1`,
-      [payment.school_id, payment.duration_days, payment.quote_seat_limit, payment.billing_period]);
+        seat_limit=$3,billing_period=$4,licence_tier=$5,campus_count=$6,onboarding_mode=$7,
+        unlimited_teachers=$8,unlimited_administrators=$9,updated_at=NOW() WHERE id=$1`,
+      [payment.school_id, payment.duration_days, payment.quote_seat_limit, payment.billing_period,
+        payment.tier_code, payment.campus_count, payment.onboarding_mode,
+        payment.unlimited_teachers, payment.unlimited_administrators]);
     }
     await client.query('COMMIT');
     return { applied: payment.quote_status !== 'paid', alreadyProcessed: false };
@@ -609,7 +657,14 @@ export function createPlatformRouter(pool) {
     consumerSubscriptions: true,
     familyLearnerLimit: 5,
     pilotDays: 30,
-    pilotSeats: 25,
+    pilotSeats: 50,
+    schoolLicenceTiers: SCHOOL_LICENCE_TIERS,
+    schoolLicenceIncludes: {
+      unlimitedTeachers: true,
+      unlimitedAdministrators: true,
+      remoteOnboarding: true,
+      sessionDiscountPercent: 20,
+    },
     paymentProvider: 'paystack',
     paymentsConfigured: paymentMode() !== 'not-configured',
     consumerPlansConfigured:consumerPlansConfigured(),
@@ -922,7 +977,8 @@ export function createPlatformRouter(pool) {
       const email = normalEmail(req.body?.email);
       const maxUses = integer(req.body?.maxUses ?? 1, 1, 100);
       const days = integer(req.body?.expiresInDays ?? 14, 1, 30);
-      if (!['teacher','student'].includes(role) || (email && !emailValid(email)) || !maxUses || !days) return fail(res, 400, 'Choose teacher or student, and enter valid invitation details.');
+      if (!['school_admin','teacher','student'].includes(role) || (email && !emailValid(email)) || !maxUses || !days) return fail(res, 400, 'Choose administrator, teacher or student, and enter valid invitation details.');
+      if (role === 'school_admin' && !email) return fail(res, 400, 'Administrator invitations must be sent to a specific email address.');
       if (email && maxUses !== 1) return fail(res, 400, 'Email-specific invitations can only be used once.');
       const code = crypto.randomBytes(24).toString('base64url');
       const invitationId = id();
@@ -956,8 +1012,13 @@ export function createPlatformRouter(pool) {
       const [schools, consumers, pilots, schoolRevenue, consumerRevenue] = await Promise.all([
         pool.query(`SELECT s.id,s.name,s.slug,
           CASE WHEN s.status IN ('pilot','licensed') AND s.licence_end_at<=NOW() THEN 'expired' ELSE s.status END AS status,
-          s.seat_limit AS "seatLimit",s.licence_end_at AS "licenceEndAt",
-          COUNT(u.id) FILTER (WHERE u.role='student' AND u.active)::int AS "seatsUsed"
+          s.seat_limit AS "seatLimit",s.licence_tier AS "licenceTier",s.campus_count AS "campusCount",
+          s.onboarding_mode AS "onboardingMode",s.billing_period AS "billingPeriod",
+          s.unlimited_teachers AS "unlimitedTeachers",s.unlimited_administrators AS "unlimitedAdministrators",
+          s.licence_end_at AS "licenceEndAt",
+          COUNT(u.id) FILTER (WHERE u.role='student' AND u.active)::int AS "seatsUsed",
+          COUNT(u.id) FILTER (WHERE u.role='teacher' AND u.active)::int AS "teachersUsed",
+          COUNT(u.id) FILTER (WHERE u.role='school_admin' AND u.active)::int AS "administratorsUsed"
           FROM schools s LEFT JOIN users u ON u.school_id=s.id WHERE s.account_type='school' GROUP BY s.id ORDER BY s.created_at DESC`),
         pool.query(`SELECT s.id,s.name,s.account_type AS "accountType",s.status,s.licence_end_at AS "licenceEndAt",
           u.email AS "ownerEmail",u.display_name AS "ownerName",
@@ -971,7 +1032,8 @@ export function createPlatformRouter(pool) {
       ]);
       res.json({ schools: schools.rows, consumers:consumers.rows, pendingPilots: pilots.rows[0].count,
         schoolRevenueKobo:Number(schoolRevenue.rows[0].amount),consumerRevenueKobo:Number(consumerRevenue.rows[0].amount),
-        revenueKobo:Number(schoolRevenue.rows[0].amount) + Number(consumerRevenue.rows[0].amount), paymentMode: paymentMode() });
+        revenueKobo:Number(schoolRevenue.rows[0].amount) + Number(consumerRevenue.rows[0].amount), paymentMode: paymentMode(),
+        licenceTiers:SCHOOL_LICENCE_TIERS });
     } catch (error) { next(error); }
   });
 
@@ -985,6 +1047,9 @@ export function createPlatformRouter(pool) {
   });
 
   router.post('/admin/pilot-requests/:id/approve', requireRole('super_admin'), async (req, res, next) => {
+    let pilot;
+    try { pilot = pilotConfiguration(req.body); }
+    catch (error) { return fail(res, 400, error.message); }
     const client = await pool.connect();
     let code;
     let schoolId;
@@ -997,14 +1062,19 @@ export function createPlatformRouter(pool) {
       if (request.status !== 'pending') throw Object.assign(new Error('This pilot request has already been reviewed.'), { status: 409 });
       schoolId = id();
       adminEmail = request.admin_email;
-      await client.query(`INSERT INTO schools(id,name,slug,status,seat_limit,licence_start_at,licence_end_at)
-        VALUES($1,$2,$3,'pilot',25,NOW(),NOW() + INTERVAL '30 days')`, [schoolId, request.school_name, slug(request.school_name)]);
+      await client.query(`INSERT INTO schools(id,name,slug,status,seat_limit,licence_tier,campus_count,
+        unlimited_teachers,unlimited_administrators,onboarding_mode,licence_start_at,licence_end_at)
+        VALUES($1,$2,$3,'pilot',$4,NULL,$5,$6,$7,'remote',NOW(),NOW() + $8 * INTERVAL '1 day')`,
+      [schoolId, request.school_name, slug(request.school_name), pilot.pilotSeats, pilot.campusCount,
+        pilot.unlimitedTeachers, pilot.unlimitedAdministrators, pilot.pilotDays]);
       code = crypto.randomBytes(24).toString('base64url');
       await client.query(`INSERT INTO invitations(id,school_id,role,email,code_hash,max_uses,expires_at,created_by)
         VALUES($1,$2,'school_admin',$3,$4,1,NOW() + INTERVAL '14 days',$5)`, [id(), schoolId, adminEmail, hash(code), req.auth.id]);
       await client.query(`UPDATE pilot_requests SET status='approved',school_id=$2,reviewed_by=$3,reviewed_at=NOW() WHERE id=$1`, [request.id, schoolId, req.auth.id]);
       await client.query('COMMIT');
-      res.json({ ok: true, schoolId, adminEmail, invitationUrl: `${appOrigin}/?join=${encodeURIComponent(code)}`, pilotSeats: 25, pilotDays: 30 });
+      res.json({ ok: true, schoolId, adminEmail, invitationUrl: `${appOrigin}/?join=${encodeURIComponent(code)}`,
+        pilotSeats:pilot.pilotSeats, pilotDays:pilot.pilotDays, campusCount:pilot.campusCount,
+        unlimitedTeachers:pilot.unlimitedTeachers, unlimitedAdministrators:pilot.unlimitedAdministrators });
     } catch (error) {
       await client.query('ROLLBACK');
       if (error.status) return fail(res, error.status, error.message);
@@ -1024,23 +1094,60 @@ export function createPlatformRouter(pool) {
   router.post('/admin/quotes', requireRole('super_admin'), async (req, res, next) => {
     try {
       const schoolId = text(req.body?.schoolId, 80);
-      const billingPeriod = String(req.body?.billingPeriod || '');
-      const amountNaira = Number(req.body?.amountNaira);
-      const amountKobo = Math.round(amountNaira * 100);
-      const seatLimit = integer(req.body?.seatLimit, 1, 100000);
-      const durationDays = integer(req.body?.durationDays ?? (billingPeriod === 'annual' ? 365 : 120), 1, 730);
-      const expiresInDays = integer(req.body?.expiresInDays ?? 14, 1, 90);
-      const title = text(req.body?.title || `LearnBridge ${billingPeriod} school licence`, 160);
-      if (!schoolId || !['termly','annual'].includes(billingPeriod) || !Number.isInteger(amountKobo) || amountKobo < 100 || !seatLimit || !durationDays || !expiresInDays || !title) return fail(res, 400, 'Enter a valid school, amount, learner-seat count and billing period.');
+      let quote;
+      try { quote = schoolLicenceQuote(req.body); }
+      catch (error) { return fail(res, 400, error.message); }
+      const title = text(req.body?.title || `LearnBridge ${quote.tierLabel} ${quote.billingPeriod} school licence`, 160);
+      const notes = text(req.body?.notes, 1000);
+      if (!schoolId || !title) return fail(res, 400, 'Choose a school and enter a valid quotation title.');
       const school = await pool.query("SELECT id FROM schools WHERE id=$1 AND account_type='school'", [schoolId]);
       if (!school.rowCount) return fail(res, 404, 'School not found.');
       const seats = await pool.query("SELECT COUNT(*)::int AS used FROM users WHERE school_id=$1 AND role='student' AND active", [schoolId]);
-      if (seatLimit < seats.rows[0].used) return fail(res, 409, `This school already has ${seats.rows[0].used} active learners. Deactivate accounts or quote at least that many seats.`);
+      if (quote.seatLimit < seats.rows[0].used) return fail(res, 409, `This school already has ${seats.rows[0].used} active learners. Deactivate accounts or quote at least that many seats.`);
       const quoteId = id();
-      await pool.query(`INSERT INTO licence_quotes(id,school_id,title,amount_kobo,billing_period,duration_days,seat_limit,status,expires_at,created_by)
-        VALUES($1,$2,$3,$4,$5,$6,$7,'sent',NOW() + $8 * INTERVAL '1 day',$9)`,
-      [quoteId, schoolId, title, amountKobo, billingPeriod, durationDays, seatLimit, expiresInDays, req.auth.id]);
-      res.status(201).json({ id: quoteId, amountKobo, currency: 'NGN', billingPeriod, durationDays, seatLimit });
+      await pool.query(`INSERT INTO licence_quotes(id,school_id,title,amount_kobo,billing_period,duration_days,seat_limit,
+        tier_code,campus_count,onboarding_mode,onboarding_fee_kobo,unlimited_teachers,unlimited_administrators,notes,
+        status,expires_at,created_by)
+        VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,'sent',NOW() + $15 * INTERVAL '1 day',$16)`,
+      [quoteId, schoolId, title, quote.amountKobo, quote.billingPeriod, quote.durationDays, quote.seatLimit,
+        quote.tierCode, quote.campusCount, quote.onboardingMode, quote.onboardingFeeKobo,
+        quote.unlimitedTeachers, quote.unlimitedAdministrators, notes, quote.expiresInDays, req.auth.id]);
+      res.status(201).json({ id:quoteId, ...quote, currency:'NGN', title, notes });
+    } catch (error) { next(error); }
+  });
+
+  router.patch('/admin/schools/:id/licence', requireRole('super_admin'), async (req, res, next) => {
+    try {
+      const status = String(req.body?.status || '');
+      const tierCode = String(req.body?.tierCode || '').toLowerCase();
+      const seatLimit = integer(req.body?.seatLimit, 1, 100000);
+      const campusCount = integer(req.body?.campusCount ?? 1, 1, 10);
+      const accessDays = integer(req.body?.accessDays ?? 30, 1, 730);
+      const onboardingMode = String(req.body?.onboardingMode || 'remote').toLowerCase();
+      let billingPeriod;
+      try { billingPeriod = normalSchoolBillingPeriod(req.body?.billingPeriod || 'termly'); }
+      catch (error) { return fail(res, 400, error.message); }
+      if (!['pending','pilot','licensed','expired','suspended'].includes(status)
+        || !SCHOOL_LICENCE_TIERS.some(tier => tier.code === tierCode)
+        || !seatLimit || !campusCount || !accessDays || !['remote','onsite','none'].includes(onboardingMode)) {
+        return fail(res, 400, 'Enter a valid status, tier, learner limit, campus count and access period.');
+      }
+      const school = await pool.query("SELECT id FROM schools WHERE id=$1 AND account_type='school'", [req.params.id]);
+      if (!school.rowCount) return fail(res, 404, 'School not found.');
+      const seats = await pool.query("SELECT COUNT(*)::int AS used FROM users WHERE school_id=$1 AND role='student' AND active", [req.params.id]);
+      if (seatLimit < seats.rows[0].used) return fail(res, 409, `This school already has ${seats.rows[0].used} active learners.`);
+      const active = ['pilot','licensed'].includes(status);
+      const result = await pool.query(`UPDATE schools SET status=$2,seat_limit=$3,licence_tier=$4,campus_count=$5,
+        billing_period=$6,onboarding_mode=$7,unlimited_teachers=TRUE,unlimited_administrators=TRUE,
+        licence_start_at=CASE WHEN $8 THEN NOW() ELSE licence_start_at END,
+        licence_end_at=CASE WHEN $8 THEN NOW() + $9 * INTERVAL '1 day' WHEN $2='expired' THEN NOW() ELSE licence_end_at END,
+        updated_at=NOW() WHERE id=$1
+        RETURNING id,name,status,seat_limit AS "seatLimit",licence_tier AS "licenceTier",campus_count AS "campusCount",
+          billing_period AS "billingPeriod",onboarding_mode AS "onboardingMode",licence_start_at AS "licenceStartAt",
+          licence_end_at AS "licenceEndAt",unlimited_teachers AS "unlimitedTeachers",
+          unlimited_administrators AS "unlimitedAdministrators"`,
+      [req.params.id, status, seatLimit, tierCode, campusCount, billingPeriod, onboardingMode, active, accessDays]);
+      res.json({ ok:true, school:result.rows[0] });
     } catch (error) { next(error); }
   });
 
