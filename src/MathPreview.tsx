@@ -17,6 +17,21 @@ const samples=[
     text:'3/4 = (3×5)/(4×5) = 15/20',
   },
   {
+    title:'Simultaneous-equation practice question',
+    description:'A plain saved question is automatically arranged as a textbook system with one equation per row.',
+    text:'Solve the simultaneous equations 2x + 3y = 13 and 3x - y = 5.',
+  },
+  {
+    title:'Further Mathematics matrix',
+    description:'Entries are arranged in true rows and columns within correctly sized square brackets.',
+    text:String.raw`Given \( A = \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \), find the determinant of A.`,
+  },
+  {
+    title:'Legacy saved matrix',
+    description:'Older nested-list matrix text is upgraded automatically to textbook matrix notation.',
+    text:'Use B = [[2, -1], [5, 3]] to calculate B squared.',
+  },
+  {
     title:'Stretching round brackets',
     description:'Both brackets are in the same MathML row as the fraction.',
     text:String.raw`Simplify \( \left(\frac{x+1}{2}\right) + \frac{3}{5} \).`,
@@ -35,7 +50,7 @@ const samples=[
 
 export default function MathPreview() {
   return <main className='math-preview-page'>
-    <header><span>LearnBridge localhost test</span><strong>Native MathML renderer 1</strong></header>
+    <header><span>LearnBridge localhost test</span><strong>Native MathML renderer 3</strong></header>
     <section className='math-preview-intro'>
       <span className='eyebrow'>EQUATION QUALITY CHECK</span>
       <h1>Textbook mathematics and chemistry notation</h1>

@@ -21,7 +21,7 @@ const escapeXml = value => String(value)
 
 function collapseMathBackslashes(value) {
   let result=String(value);
-  const doubled=/\\\\(?=(?:frac|sqrt|text|left|right|times|cdot|div|pm|mp|leq?|geq?|neq?|approx|equiv|propto|infty|to|right(?:arrow|leftharpoons)|longrightarrow|leftrightharpoons|leftarrow|alpha|beta|gamma|delta|theta|lambda|mu|pi|rho|sigma|omega|Delta|Sigma|Omega)\b|[()[\]])/g;
+  const doubled=/\\\\(?=(?:begin|end|frac|sqrt|text|left|right|times|cdot|div|pm|mp|leq?|geq?|neq?|approx|equiv|propto|infty|to|right(?:arrow|leftharpoons)|longrightarrow|leftrightharpoons|leftarrow|alpha|beta|gamma|delta|theta|lambda|mu|pi|rho|sigma|omega|Delta|Sigma|Omega)\b|[()[\]])/g;
   for(let pass=0;pass<4;pass++) {
     const next=result.replace(doubled,'\\');
     if(next===result)break;
@@ -81,6 +81,174 @@ function normalizeGroupedSlashFractions(value) {
   return result;
 }
 
+const ALGEBRA_NUMBER = String.raw`(?:\d+(?:\.\d+)?|\d+\s*\/\s*\d+)`;
+const ALGEBRA_VARIABLE_TERM = String.raw`(?:(?:${ALGEBRA_NUMBER})\s*(?:[×*]\s*)?)?[A-Za-z]`;
+const ALGEBRA_ATOM = String.raw`(?:${ALGEBRA_VARIABLE_TERM}|${ALGEBRA_NUMBER})`;
+const ALGEBRA_SIDE = String.raw`[+\-−]?\s*${ALGEBRA_ATOM}(?:\s*[+\-−]\s*${ALGEBRA_ATOM})*`;
+const LINEAR_EQUATION_SOURCE = String.raw`${ALGEBRA_SIDE}\s*=\s*${ALGEBRA_SIDE}`;
+const COMPLETE_LINEAR_EQUATION_PATTERN = new RegExp(String.raw`^${LINEAR_EQUATION_SOURCE}$`);
+const LINEAR_EQUATION_PATTERN = new RegExp(String.raw`(?<![A-Za-z0-9_])${LINEAR_EQUATION_SOURCE}(?![A-Za-z0-9_])`,'g');
+
+function isLinearEquation(value) {
+  return COMPLETE_LINEAR_EQUATION_PATTERN.test(String(value).trim());
+}
+
+function equationVariables(value) {
+  return new Set((String(value).match(/[A-Za-z]/g)||[]).map(variable=>variable.toLowerCase()));
+}
+
+function isSimultaneousPair(first,second) {
+  if(!isLinearEquation(first)||!isLinearEquation(second))return false;
+  const firstVariables=equationVariables(first);
+  const secondVariables=equationVariables(second);
+  const union=new Set([...firstVariables,...secondVariables]);
+  return union.size>=2&&[...firstVariables].some(variable=>secondVariables.has(variable));
+}
+
+function casesExpression(equations) {
+  return String.raw`\begin{cases} ${equations.join(String.raw` \\ `)} \end{cases}`;
+}
+
+function findPlainSimultaneousSystem(value) {
+  LINEAR_EQUATION_PATTERN.lastIndex=0;
+  const matches=[...String(value).matchAll(LINEAR_EQUATION_PATTERN)];
+  for(let index=0;index<matches.length-1;index++) {
+    const first=matches[index];
+    const second=matches[index+1];
+    const firstEnd=(first.index||0)+first[0].length;
+    const secondStart=second.index||0;
+    const separator=String(value).slice(firstEnd,secondStart);
+    if(!/^\s*(?:\(\s*\d+\s*\)\s*)?(?:(?:,|;|\band\b|\btogether\s+with\b)\s*)?$/i.test(separator))continue;
+    if(!isSimultaneousPair(first[0],second[0]))continue;
+    const secondEnd=secondStart+second[0].length;
+    const trailingLabel=String(value).slice(secondEnd).match(/^\s*\(\s*\d+\s*\)/)?.[0]||'';
+    return {
+      start:first.index||0,
+      end:secondEnd+trailingLabel.length,
+      equations:[first[0].trim(),second[0].trim()],
+    };
+  }
+  return null;
+}
+
+function parseEquationEnvironment(value) {
+  let input=String(value).trim();
+  let brace=false;
+  if(/^\\left\s*\\\{/.test(input)) {
+    brace=true;
+    input=input.replace(/^\\left\s*\\\{\s*/,'').replace(/\s*\\right\s*\.\s*$/,'');
+  }
+  const match=input.match(/^\\begin\{(cases|aligned|array)\}(?:\{[^{}]*\})?([\s\S]*?)\\end\{\1\}$/);
+  if(!match)return null;
+  const rows=match[2]
+    .split(/\\\\(?:\[[^\]]*\])?|\n+/)
+    .map(row=>row.replaceAll('&','').trim())
+    .filter(Boolean);
+  if(rows.length<2||!rows.every(row=>row.includes('=')))return null;
+  return { rows, brace:brace||match[1]==='cases' };
+}
+
+const MATRIX_ENVIRONMENT_PATTERN = /\\begin\{(matrix|pmatrix|bmatrix|Bmatrix|vmatrix|Vmatrix|array)\}(?:\{[^{}]*\})?([\s\S]*?)\\end\{\1\}/g;
+const MATRIX_FENCES = Object.freeze({
+  matrix:null,
+  array:null,
+  pmatrix:['(',')'],
+  bmatrix:['[',']'],
+  Bmatrix:['{','}'],
+  vmatrix:['|','|'],
+  Vmatrix:['‖','‖'],
+});
+
+function parseMatrixRows(value) {
+  const rows=String(value)
+    .split(/\\\\(?:\[[^\]]*\])?|\n+/)
+    .map(row=>row.trim())
+    .filter(Boolean)
+    .map(row=>row.split('&').map(cell=>cell.trim()));
+  if(!rows.length||rows.some(row=>!row.length||row.some(cell=>!cell)))return null;
+  const columnCount=rows[0].length;
+  if(rows.some(row=>row.length!==columnCount))return null;
+  return rows;
+}
+
+function matrixExpression(rows,environment='bmatrix') {
+  return `\\begin{${environment}} ${rows.map(row=>row.join(' & ')).join(String.raw` \\ `)} \\end{${environment}}`;
+}
+
+function isPlainMatrixCell(value) {
+  const cell=String(value).trim();
+  return Boolean(cell&&cell.length<=60&&/^[A-Za-z0-9.+\-−×*\/=(){}_^\\\s]+$/u.test(cell));
+}
+
+function parsePlainMatrix(value) {
+  const candidate=String(value).trim();
+  if(!candidate.startsWith('[')||!candidate.endsWith(']'))return null;
+  const inner=candidate.slice(1,-1).trim();
+  let rows=[];
+  if(inner.startsWith('[')) {
+    const matches=[...inner.matchAll(/\[([^\[\]]+)\]/g)];
+    if(matches.length<2)return null;
+    const remainder=inner.replace(/\[[^\[\]]+\]/g,'').replace(/[\s,]/g,'');
+    if(remainder)return null;
+    rows=matches.map(match=>{
+      const row=match[1].trim();
+      return row.includes(',')?row.split(',').map(cell=>cell.trim()):row.split(/\s+/);
+    });
+  } else {
+    if(!/[;\n]/.test(inner))return null;
+    rows=inner.split(/;|\n+/).map(row=>{
+      const trimmed=row.trim();
+      return trimmed.includes(',')?trimmed.split(',').map(cell=>cell.trim()):trimmed.split(/\s+/);
+    }).filter(row=>row.some(Boolean));
+  }
+  if(rows.length<2||rows[0].length<2)return null;
+  const columnCount=rows[0].length;
+  if(rows.some(row=>row.length!==columnCount||row.some(cell=>!isPlainMatrixCell(cell))))return null;
+  return rows;
+}
+
+function findPlainMatrix(value) {
+  const text=String(value);
+  for(let start=0;start<text.length;start++) {
+    if(text[start]!=='[')continue;
+    const end=matchingDelimiterIndex(text,start);
+    if(end<0)continue;
+    const rows=parsePlainMatrix(text.slice(start,end+1));
+    if(!rows)continue;
+    let expressionStart=start;
+    let assignment='';
+    const assignmentMatch=text.slice(0,start).match(/([A-Za-z](?:_[A-Za-z0-9{}]+)?\s*=\s*)$/);
+    if(assignmentMatch) {
+      assignment=assignmentMatch[1];
+      expressionStart=start-assignment.length;
+    }
+    return {
+      start:expressionStart,
+      end:end+1,
+      expression:`${assignment}${matrixExpression(rows)}`.trim(),
+    };
+  }
+  return null;
+}
+
+function containsMatrixEnvironment(value) {
+  MATRIX_ENVIRONMENT_PATTERN.lastIndex=0;
+  return MATRIX_ENVIRONMENT_PATTERN.test(String(value));
+}
+
+function findBareMatrixEnvironment(value) {
+  const text=String(value);
+  MATRIX_ENVIRONMENT_PATTERN.lastIndex=0;
+  for(const match of text.matchAll(MATRIX_ENVIRONMENT_PATTERN)) {
+    if(!parseMatrixRows(match[2]))continue;
+    let start=match.index||0;
+    const assignmentMatch=text.slice(0,start).match(/([A-Za-z](?:_[A-Za-z0-9{}]+)?\s*=\s*)$/);
+    if(assignmentMatch)start-=assignmentMatch[1].length;
+    return {start,end:(match.index||0)+match[0].length,expression:text.slice(start,(match.index||0)+match[0].length).trim()};
+  }
+  return null;
+}
+
 const CHEMICAL_ELEMENT = String.raw`(?:Ac|Ag|Al|Am|Ar|As|At|Au|Ba|Be|Bh|Bi|Bk|Br|Ca|Cd|Ce|Cf|Cl|Cm|Cn|Co|Cr|Cs|Cu|Db|Ds|Dy|Er|Es|Eu|Fe|Fl|Fm|Fr|Ga|Gd|Ge|He|Hf|Hg|Ho|Hs|In|Ir|Kr|La|Li|Lr|Lu|Lv|Mc|Md|Mg|Mn|Mo|Mt|Na|Nb|Nd|Ne|Nh|Ni|No|Np|Og|Os|Pa|Pb|Pd|Pm|Po|Pr|Pt|Pu|Ra|Rb|Re|Rf|Rg|Rh|Rn|Ru|Sb|Sc|Se|Sg|Si|Sm|Sn|Sr|Ta|Tb|Tc|Te|Th|Ti|Tl|Tm|Ts|Xe|Yb|Zn|Zr|B|C|F|H|I|K|N|O|P|S|U|V|W|Y)`;
 const CHEMICAL_SUBSCRIPT = String.raw`(?:_\{?\d+\}?|[₀₁₂₃₄₅₆₇₈₉]+|\d+)`;
 const CHEMICAL_UNIT = String.raw`(?:${CHEMICAL_ELEMENT}(?:${CHEMICAL_SUBSCRIPT})?|\((?:${CHEMICAL_ELEMENT}(?:${CHEMICAL_SUBSCRIPT})?)+\)(?:${CHEMICAL_SUBSCRIPT})?)`;
@@ -135,13 +303,35 @@ function looksLikeEquation(value) {
   const text=value.trim();
   if(!text || text.length>220)return false;
   const hasFraction=/\\frac\s*\{|(?<![\d/])\d{1,3}\s*\/\s*\d{1,3}(?![\d/])|[\u00bc-\u00be\u2150-\u215e]|[)\]]\s*\/\s*[(\[]/u.test(text);
+  const hasLinearEquation=isLinearEquation(text);
   const hasStructure=/[=+−×÷<>]|≤|≥|\\(?:times|cdot|div|leq?|geq?|neq?|sqrt)\b/.test(text);
   const ordinaryWords=(text.replace(/\\[A-Za-z]+/g,' ').match(/\b[A-Za-z]{3,}\b/g)||[]).length;
-  return hasFraction&&hasStructure&&ordinaryWords<=1;
+  return (hasFraction||hasLinearEquation)&&hasStructure&&ordinaryWords<=1;
 }
 
 function pushPlainTextOrFractions(segments,text) {
   if(!text)return;
+  const matrixEnvironment=findBareMatrixEnvironment(text);
+  if(matrixEnvironment) {
+    pushPlainTextOrFractions(segments,text.slice(0,matrixEnvironment.start));
+    segments.push({type:'math',value:matrixEnvironment.expression,display:true});
+    pushPlainTextOrFractions(segments,text.slice(matrixEnvironment.end));
+    return;
+  }
+  const matrix=findPlainMatrix(text);
+  if(matrix) {
+    pushPlainTextOrFractions(segments,text.slice(0,matrix.start));
+    segments.push({type:'math',value:matrix.expression,display:true});
+    pushPlainTextOrFractions(segments,text.slice(matrix.end));
+    return;
+  }
+  const system=findPlainSimultaneousSystem(text);
+  if(system) {
+    pushPlainTextOrFractions(segments,text.slice(0,system.start));
+    segments.push({type:'math',value:casesExpression(system.equations),display:true});
+    pushPlainTextOrFractions(segments,text.slice(system.end));
+    return;
+  }
   const instruction=text.match(/^((?:(?:Example|Question)\s*\d+\s*:\s*)?(?:Solve|Simplify|Evaluate|Calculate|Compute|Find|Express)\b\s*:?[ \t]*)([\s\S]+)$/i);
   if(instruction&&looksLikeEquation(instruction[2].replace(/[?.!]\s*$/,''))) {
     const punctuation=instruction[2].match(/[?.!]\s*$/)?.[0]||'';
@@ -206,6 +396,24 @@ function pushTextOrFractions(segments,text) {
   else pushStandaloneChemicalFormulas(segments,text);
 }
 
+function combineDelimitedEquationPairs(segments) {
+  const combined=[];
+  for(let index=0;index<segments.length;index++) {
+    const first=segments[index];
+    const separator=segments[index+1];
+    const second=segments[index+2];
+    if(first?.type==='math'&&separator?.type==='text'&&second?.type==='math'
+      &&/^\s*(?:,|;|\band\b|\btogether\s+with\b)\s*$/i.test(separator.value)
+      &&isSimultaneousPair(first.value,second.value)) {
+      combined.push({type:'math',value:casesExpression([first.value.trim(),second.value.trim()]),display:true});
+      index+=2;
+      continue;
+    }
+    combined.push(first);
+  }
+  return combined;
+}
+
 export function splitMathText(value) {
   const text=cleanEducationalText(value);
   const segments=[];
@@ -216,11 +424,12 @@ export function splitMathText(value) {
     pushTextOrFractions(segments,text.slice(cursor,index));
     const expression=(match[1]??match[2]??'').trim();
     const chemistry=isChemicalEquation(expression);
-    segments.push({type:chemistry?'chemistry':'math',value:chemistry?normalizeChemicalMath(expression):expression,display:match[2]!==undefined});
+    segments.push({type:chemistry?'chemistry':'math',value:chemistry?normalizeChemicalMath(expression):expression,display:match[2]!==undefined||Boolean(parseEquationEnvironment(expression))||containsMatrixEnvironment(expression)});
     cursor=index+match[0].length;
   }
   pushTextOrFractions(segments,text.slice(cursor));
-  return segments.length?segments:[{type:'text',value:text,display:false}];
+  const combined=combineDelimitedEquationPairs(segments);
+  return combined.length?combined:[{type:'text',value:text,display:false}];
 }
 
 class MathParser {
@@ -348,9 +557,65 @@ function accessibleMath(value) {
     .trim();
 }
 
+function renderEquationEnvironment(environment) {
+  const table=`<mtable columnalign="left" rowspacing="0.45em">${environment.rows
+    .map(row=>`<mtr><mtd><mrow>${new MathParser(row).parse()}</mrow></mtd></mtr>`)
+    .join('')}</mtable>`;
+  return {
+    body:environment.brace
+      ? `<mrow><mo stretchy="true" symmetric="true" fence="true">{</mo>${table}</mrow>`
+      : table,
+    label:environment.rows.map(accessibleMath).join('; '),
+  };
+}
+
+function renderMatrixTable(environment,rows) {
+  const table=`<mtable columnalign="center" rowspacing="0.4em" columnspacing="0.9em">${rows
+    .map(row=>`<mtr>${row.map(cell=>`<mtd><mrow>${new MathParser(cell).parse()}</mrow></mtd>`).join('')}</mtr>`)
+    .join('')}</mtable>`;
+  const fences=MATRIX_FENCES[environment];
+  return {
+    body:fences
+      ? `<mrow><mo stretchy="true" symmetric="true" fence="true">${escapeXml(fences[0])}</mo>${table}<mo stretchy="true" symmetric="true" fence="true">${escapeXml(fences[1])}</mo></mrow>`
+      : table,
+    label:`matrix ${rows.map(row=>row.map(accessibleMath).join(', ')).join('; ')}`,
+  };
+}
+
+function renderMatrixExpressions(value) {
+  const input=String(value);
+  MATRIX_ENVIRONMENT_PATTERN.lastIndex=0;
+  let body='';
+  let cursor=0;
+  let found=false;
+  const labels=[];
+  for(const match of input.matchAll(MATRIX_ENVIRONMENT_PATTERN)) {
+    const rows=parseMatrixRows(match[2]);
+    if(!rows)continue;
+    const index=match.index||0;
+    const prefix=input.slice(cursor,index);
+    body+=new MathParser(prefix).parse();
+    if(prefix.trim())labels.push(accessibleMath(prefix));
+    const rendered=renderMatrixTable(match[1],rows);
+    body+=rendered.body;
+    labels.push(rendered.label);
+    cursor=index+match[0].length;
+    found=true;
+  }
+  if(!found)return null;
+  const suffix=input.slice(cursor);
+  body+=new MathParser(suffix).parse();
+  if(suffix.trim())labels.push(accessibleMath(suffix));
+  return {body,label:labels.filter(Boolean).join(' ')};
+}
+
 export function renderMathML(value,display=false) {
   const input=normalizeGroupedSlashFractions(collapseMathBackslashes(value)).trim();
-  const body=new MathParser(input).parse();
-  const mode=display?'block':'inline';
-  return `<math xmlns="http://www.w3.org/1998/Math/MathML" display="${mode}" aria-label="${escapeXml(accessibleMath(input))}"><mstyle displaystyle="true" scriptlevel="0"><mrow>${body}</mrow></mstyle></math>`;
+  const environment=parseEquationEnvironment(input);
+  const matrix=environment?null:renderMatrixExpressions(input);
+  const rendered=environment
+    ? renderEquationEnvironment(environment)
+    : matrix||{body:new MathParser(input).parse(),label:accessibleMath(input)};
+  const mode=display||environment||matrix?'block':'inline';
+  return `<math xmlns="http://www.w3.org/1998/Math/MathML" display="${mode}" aria-label="${escapeXml(rendered.label)}"><mstyle displaystyle="true" scriptlevel="0"><mrow>${rendered.body}</mrow></mstyle></math>`;
 }

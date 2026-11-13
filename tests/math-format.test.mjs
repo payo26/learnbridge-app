@@ -63,6 +63,90 @@ test('generation rules show equivalent fractions with explicit numerator and den
   assert.ok(server.includes(String.raw`Correct equivalent-fraction model: \( \frac{3}{4} = \frac{3 \times 5}{4 \times 5} = \frac{15}{20} \).`));
 });
 
+test('formats a plain simultaneous-equation practice question as a textbook system',()=>{
+  const segments=splitMathText('Solve the simultaneous equations 2x + 3y = 13 and 3x - y = 5.');
+  assert.deepEqual(segments,[
+    {type:'text',value:'Solve the simultaneous equations ',display:false},
+    {type:'math',value:String.raw`\begin{cases} 2x + 3y = 13 \\ 3x - y = 5 \end{cases}`,display:true},
+    {type:'text',value:'.',display:false},
+  ]);
+});
+
+test('removes legacy equation numbers while arranging a saved system',()=>{
+  const segments=splitMathText('Solve: 4x + y = 11 (1) 2x - y = 1 (2).');
+  const system=segments.find(segment=>segment.type==='math');
+  assert.equal(system?.value,String.raw`\begin{cases} 4x + y = 11 \\ 2x - y = 1 \end{cases}`);
+  assert.equal(system?.display,true);
+});
+
+test('combines separately delimited simultaneous equations into one display',()=>{
+  const segments=splitMathText(String.raw`Solve \(2x + y = 7\) and \(x - y = 2\).`);
+  assert.deepEqual(segments,[
+    {type:'text',value:'Solve ',display:false},
+    {type:'math',value:String.raw`\begin{cases} 2x + y = 7 \\ x - y = 2 \end{cases}`,display:true},
+    {type:'text',value:'.',display:false},
+  ]);
+});
+
+test('renders simultaneous equations on separate rows beneath one brace',()=>{
+  const markup=renderMathML(String.raw`\begin{cases} 2x + y = 7 \\ x - y = 2 \end{cases}`);
+  assert.equal((markup.match(/<mtr>/g)||[]).length,2);
+  assert.match(markup,/<mo[^>]*fence="true"[^>]*>\{<\/mo><mtable/);
+  assert.match(markup,/<mn>2<\/mn><mi>x<\/mi><mo>\+<\/mo><mi>y<\/mi><mo>=<\/mo><mn>7<\/mn>/);
+  assert.doesNotMatch(markup,/begin|cases|end/);
+});
+
+test('generation rules require the same system layout in practice questions',async()=>{
+  const server=await readFile(new URL('../backend/server.mjs',import.meta.url),'utf8');
+  assert.ok(server.includes('use this layout in worked examples, practice questions, model answers and checkpoint questions'));
+  assert.ok(server.includes(String.raw`Correct simultaneous-equation model: \[ \begin{cases} 2x + y = 7 \\ x - y = 2 \end{cases} \].`));
+});
+
+test('renders a square-bracket matrix as genuine rows and columns',()=>{
+  const markup=renderMathML(String.raw`\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}`);
+  assert.equal((markup.match(/<mtr>/g)||[]).length,2);
+  assert.equal((markup.match(/<mtd>/g)||[]).length,4);
+  assert.match(markup,/<mo[^>]*fence="true"[^>]*>\[<\/mo><mtable/);
+  assert.match(markup,/<\/mtable><mo[^>]*fence="true"[^>]*>\]<\/mo>/);
+  assert.doesNotMatch(markup,/begin|bmatrix|end|&amp;/);
+});
+
+test('keeps an assigned round-bracket matrix inside one MathML expression',()=>{
+  const markup=renderMathML(String.raw`A = \begin{pmatrix} 1 & -2 \\ \frac{1}{2} & x \end{pmatrix}`);
+  assert.match(markup,/<mi>A<\/mi><mo>=<\/mo><mrow><mo[^>]*>\(<\/mo><mtable/);
+  assert.match(markup,/<mfrac><mrow><mn>1<\/mn><\/mrow><mrow><mn>2<\/mn><\/mrow><\/mfrac>/);
+  assert.match(markup,/<\/mtable><mo[^>]*>\)<\/mo><\/mrow>/);
+});
+
+test('upgrades legacy nested-list and semicolon matrices to textbook layout',()=>{
+  const nested=splitMathText('Given A = [[1, 2], [3, 4]], find det(A).');
+  assert.deepEqual(nested,[
+    {type:'text',value:'Given ',display:false},
+    {type:'math',value:String.raw`A = \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}`,display:true},
+    {type:'text',value:', find det(A).',display:false},
+  ]);
+  const flat=splitMathText('Use [1 2; 3 4] in the calculation.');
+  assert.equal(flat.find(segment=>segment.type==='math')?.value,String.raw`\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}`);
+});
+
+test('leaves an ordinary closed interval unchanged',()=>{
+  assert.deepEqual(splitMathText('Use the interval [0, 1].'),[
+    {type:'text',value:'Use the interval [0, 1].',display:false},
+  ]);
+});
+
+test('renders determinant notation with vertical matrix bars',()=>{
+  const markup=renderMathML(String.raw`\begin{vmatrix} a & b \\ c & d \end{vmatrix}`);
+  assert.equal((markup.match(/<mtr>/g)||[]).length,2);
+  assert.equal((markup.match(/fence="true">\|<\/mo>/g)||[]).length,2);
+});
+
+test('generation rules require true matrix layout throughout lesson content',async()=>{
+  const server=await readFile(new URL('../backend/server.mjs',import.meta.url),'utf8');
+  assert.ok(server.includes('Apply true matrix layout in worked examples, practice questions, model answers and checkpoint questions'));
+  assert.ok(server.includes(String.raw`Correct matrix model: \[ A = \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \].`));
+});
+
 test('normalises raw and plain chemical formula numbers as subscripts',()=>{
   assert.equal(normalizeChemicalMath('2H_2 + O_2 → 2H_2O'),'2H_{2} + O_{2} → 2H_{2}O');
   assert.equal(normalizeChemicalMath('2H2 + O2 -> 2H2O'),'2H_{2} + O_{2} → 2H_{2}O');
