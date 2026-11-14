@@ -103,18 +103,18 @@ jobs:
           printf '%s\n' "$SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
           chmod 600 "$HOME/.ssh/id_ed25519" "$HOME/.ssh/known_hosts"
 
-      - name: Deploy and verify
+      - name: Deploy and verify exact release
         env:
           SSH_HOST: ${{ secrets.VM_HOST }}
           SSH_USER: ${{ secrets.VM_USER }}
-          DEPLOY_TAG: sha-${{ github.sha }}
+          DEPLOY_TAG: ${{ env.IMAGE_TAG }}
         run: |
           ssh -o BatchMode=yes -o StrictHostKeyChecking=yes \
             "$SSH_USER@$SSH_HOST" \
-            "DEPLOY_TAG='$DEPLOY_TAG' bash -s" <<'REMOTE'
+            "DEPLOY_TAG='$DEPLOY_TAG' DOCKERHUB_NAMESPACE='$DOCKERHUB_NAMESPACE' bash -s" <<'REMOTE'
           set -Eeuo pipefail
 
-          cd /home/azureuser/learnbridge
+          cd "$HOME/learnbridge"
           test -s .env
           test -s compose.prod.yml
 
@@ -130,32 +130,43 @@ jobs:
               printf '\nIMAGE_TAG=%s\n' "$tag" >> .env
             fi
             chmod 600 .env
+            test "$(sed -n 's/^IMAGE_TAG=//p' .env | tail -n 1)" = "$tag"
           }
 
           previous_tag="$(sed -n 's/^IMAGE_TAG=//p' .env | tail -n 1)"
           previous_tag="${previous_tag:-v8.0.8}"
 
           mkdir -p backups
-          backup="backups/learnbridge-before-${DEPLOY_TAG}-$(date +%Y%m%d-%H%M%S).dump"
-          compose exec -T db sh -c \
-            'pg_dump -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Fc' > "$backup"
-          test -s "$backup"
-          find backups -type f -name 'learnbridge-before-*.dump' -mtime +14 -delete
+          timestamp="$(date +%Y%m%d-%H%M%S)"
+          env_backup="backups/.env-before-${DEPLOY_TAG}-${timestamp}"
+          database_backup="backups/learnbridge-before-${DEPLOY_TAG}-${timestamp}.dump"
 
-          IMAGE_TAG="$DEPLOY_TAG" \
-            docker compose --env-file .env -f compose.prod.yml pull api web
+          install -m 600 .env "$env_backup"
+          compose exec -T db sh -c \
+            'pg_dump -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Fc' > "$database_backup"
+          test -s "$database_backup"
+
+          find backups -type f -name 'learnbridge-before-*.dump' -mtime +14 -delete
+          find backups -type f -name '.env-before-*' -mtime +14 -delete
+
+          IMAGE_TAG="$DEPLOY_TAG" compose pull api web
 
           rollback() {
+            failure_status=$?
             trap - ERR
-            echo "Deployment failed; restoring image tag ${previous_tag}."
-            update_image_tag "$previous_tag"
-            compose pull api web || true
-            compose up -d --force-recreate api web || true
-            compose restart caddy || true
+            set +e
+            echo "Deployment failed; restoring ${previous_tag}."
+            install -m 600 "$env_backup" .env
+            compose pull api web
+            compose up -d --force-recreate api web
+            compose restart caddy
+            exit "$failure_status"
           }
 
           trap rollback ERR
+
           update_image_tag "$DEPLOY_TAG"
+          compose config --quiet
           compose up -d --force-recreate api web
 
           api_healthy=false
@@ -169,13 +180,37 @@ jobs:
           done
           test "$api_healthy" = true
 
-          compose exec -T web wget -qO- http://127.0.0.1/ >/dev/null
+          web_healthy=false
+          for attempt in $(seq 1 18); do
+            web_id="$(compose ps -q web)"
+            if test -n "$web_id" && \
+              test "$(docker inspect --format '{{.State.Health.Status}}' "$web_id")" = healthy; then
+              web_healthy=true
+              break
+            fi
+            sleep 10
+          done
+          test "$web_healthy" = true
+
+          api_id="$(compose ps -q api)"
+          web_id="$(compose ps -q web)"
+          api_image="$(docker inspect --format '{{.Config.Image}}' "$api_id")"
+          web_image="$(docker inspect --format '{{.Config.Image}}' "$web_id")"
+
+          test "$api_image" = "${DOCKERHUB_NAMESPACE}/learnbridge-api:${DEPLOY_TAG}"
+          test "$web_image" = "${DOCKERHUB_NAMESPACE}/learnbridge-web:${DEPLOY_TAG}"
+
+          expected_version="$(compose exec -T api node -p "require('./package.json').version")"
+          test -n "$expected_version"
+
           compose restart caddy
 
           public_healthy=false
           for attempt in $(seq 1 18); do
             if curl --fail --silent --show-error --max-time 10 \
-              https://learnbridge-app.com/api/health | grep -q '"status":"ok"'; then
+              "https://learnbridge-app.com/api/health?nocache=$(date +%s)" |
+              EXPECTED_VERSION="$expected_version" python3 -c \
+                'import json,os,sys; data=json.load(sys.stdin); sys.exit(0 if data.get("status")=="ok" and data.get("version")==os.environ["EXPECTED_VERSION"] else 1)'; then
               public_healthy=true
               break
             fi
@@ -185,5 +220,5 @@ jobs:
 
           trap - ERR
           compose ps
-          echo "LearnBridge ${DEPLOY_TAG} deployed successfully."
+          echo "LearnBridge ${DEPLOY_TAG} (version ${expected_version}) deployed and verified successfully."
           REMOTE
