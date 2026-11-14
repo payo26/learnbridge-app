@@ -79,6 +79,15 @@ test('removes legacy equation numbers while arranging a saved system',()=>{
   assert.equal(system?.display,true);
 });
 
+test('decodes literal saved newlines before arranging a practice-question system',()=>{
+  const segments=splitMathText(String.raw`Solve the simultaneous equations by substitution method: \n\n2x + y = 7 \n\nx - y = 1`);
+  const system=segments.find(segment=>segment.type==='math');
+  assert.equal(system?.value,String.raw`\begin{cases} 2x + y = 7 \\ x - y = 1 \end{cases}`);
+  assert.equal(system?.display,true);
+  assert.ok(segments.every(segment=>!segment.value.includes(String.raw`\n`)));
+  assert.equal(cleanEducationalText(String.raw`x \neq y`),String.raw`x \neq y`);
+});
+
 test('combines separately delimited simultaneous equations into one display',()=>{
   const segments=splitMathText(String.raw`Solve \(2x + y = 7\) and \(x - y = 2\).`);
   assert.deepEqual(segments,[
@@ -127,6 +136,21 @@ test('upgrades legacy nested-list and semicolon matrices to textbook layout',()=
   ]);
   const flat=splitMathText('Use [1 2; 3 4] in the calculation.');
   assert.equal(flat.find(segment=>segment.type==='math')?.value,String.raw`\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}`);
+});
+
+test('upgrades saved row and column matrices from production lessons',()=>{
+  const segments=splitMathText('Write the system as A = [[2, 3], [4, 1]], X = [[x], [y]], and B = [[8], [7]].');
+  const matrices=segments.filter(segment=>segment.type==='math');
+  assert.equal(matrices.length,3);
+  assert.equal(matrices[0].value,String.raw`A = \begin{bmatrix} 2 & 3 \\ 4 & 1 \end{bmatrix}`);
+  assert.equal(matrices[1].value,String.raw`X = \begin{bmatrix} x \\ y \end{bmatrix}`);
+  assert.equal(matrices[2].value,String.raw`B = \begin{bmatrix} 8 \\ 7 \end{bmatrix}`);
+  const columnMarkup=renderMathML(matrices[1].value);
+  assert.equal((columnMarkup.match(/<mtr>/g)||[]).length,2);
+  assert.equal((columnMarkup.match(/<mtd>/g)||[]).length,2);
+
+  const row=splitMathText('Use R = [[1, 2, 3]] in the calculation.');
+  assert.equal(row.find(segment=>segment.type==='math')?.value,String.raw`R = \begin{bmatrix} 1 & 2 & 3 \end{bmatrix}`);
 });
 
 test('leaves an ordinary closed interval unchanged',()=>{

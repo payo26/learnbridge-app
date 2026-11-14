@@ -81,11 +81,11 @@ function normalizeGroupedSlashFractions(value) {
   return result;
 }
 
-const ALGEBRA_NUMBER = String.raw`(?:\d+(?:\.\d+)?|\d+\s*\/\s*\d+)`;
-const ALGEBRA_VARIABLE_TERM = String.raw`(?:(?:${ALGEBRA_NUMBER})\s*(?:[×*]\s*)?)?[A-Za-z]`;
+const ALGEBRA_NUMBER = String.raw`(?:\d+(?:\.\d+)?|\d+[ \t]*\/[ \t]*\d+)`;
+const ALGEBRA_VARIABLE_TERM = String.raw`(?:(?:${ALGEBRA_NUMBER})[ \t]*(?:[×*][ \t]*)?)?[A-Za-z]`;
 const ALGEBRA_ATOM = String.raw`(?:${ALGEBRA_VARIABLE_TERM}|${ALGEBRA_NUMBER})`;
-const ALGEBRA_SIDE = String.raw`[+\-−]?\s*${ALGEBRA_ATOM}(?:\s*[+\-−]\s*${ALGEBRA_ATOM})*`;
-const LINEAR_EQUATION_SOURCE = String.raw`${ALGEBRA_SIDE}\s*=\s*${ALGEBRA_SIDE}`;
+const ALGEBRA_SIDE = String.raw`[+\-−]?[ \t]*${ALGEBRA_ATOM}(?:[ \t]*[+\-−][ \t]*${ALGEBRA_ATOM})*`;
+const LINEAR_EQUATION_SOURCE = String.raw`${ALGEBRA_SIDE}[ \t]*=[ \t]*${ALGEBRA_SIDE}`;
 const COMPLETE_LINEAR_EQUATION_PATTERN = new RegExp(String.raw`^${LINEAR_EQUATION_SOURCE}$`);
 const LINEAR_EQUATION_PATTERN = new RegExp(String.raw`(?<![A-Za-z0-9_])${LINEAR_EQUATION_SOURCE}(?![A-Za-z0-9_])`,'g');
 
@@ -187,7 +187,7 @@ function parsePlainMatrix(value) {
   let rows=[];
   if(inner.startsWith('[')) {
     const matches=[...inner.matchAll(/\[([^\[\]]+)\]/g)];
-    if(matches.length<2)return null;
+    if(!matches.length)return null;
     const remainder=inner.replace(/\[[^\[\]]+\]/g,'').replace(/[\s,]/g,'');
     if(remainder)return null;
     rows=matches.map(match=>{
@@ -201,7 +201,7 @@ function parsePlainMatrix(value) {
       return trimmed.includes(',')?trimmed.split(',').map(cell=>cell.trim()):trimmed.split(/\s+/);
     }).filter(row=>row.some(Boolean));
   }
-  if(rows.length<2||rows[0].length<2)return null;
+  if(!rows.length||!rows[0].length||rows.length*rows[0].length<2)return null;
   const columnCount=rows[0].length;
   if(rows.some(row=>row.length!==columnCount||row.some(cell=>!isPlainMatrixCell(cell))))return null;
   return rows;
@@ -291,6 +291,8 @@ export function isChemicalEquation(value) {
 
 export function cleanEducationalText(value) {
   return collapseMathBackslashes(value ?? '')
+    .replace(/\\r\\n|\\n\\n|\\r\\r/g,match=>match==='\\n\\n'?'\n\n':'\n')
+    .replace(/\\n(?=\s|$)|\\r(?=\s|$)/g,'\n')
     .replace(/\r\n?/g,'\n')
     .replace(/^\s{0,3}#{1,6}\s+/gm,'')
     .replace(/\*\*([\s\S]*?)\*\*/g,'$1')

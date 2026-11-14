@@ -17,9 +17,9 @@ const samples=[
     text:'3/4 = (3×5)/(4×5) = 15/20',
   },
   {
-    title:'Simultaneous-equation practice question',
-    description:'A plain saved question is automatically arranged as a textbook system with one equation per row.',
-    text:'Solve the simultaneous equations 2x + 3y = 13 and 3x - y = 5.',
+    title:'Saved simultaneous-equation practice question',
+    description:'Literal saved newline markers are decoded and the equations are arranged as a textbook system.',
+    text:String.raw`Solve the simultaneous equations by substitution method: \n\n2x + y = 7 \n\nx - y = 1`,
   },
   {
     title:'Further Mathematics matrix',
@@ -27,9 +27,9 @@ const samples=[
     text:String.raw`Given \( A = \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \), find the determinant of A.`,
   },
   {
-    title:'Legacy saved matrix',
-    description:'Older nested-list matrix text is upgraded automatically to textbook matrix notation.',
-    text:'Use B = [[2, -1], [5, 3]] to calculate B squared.',
+    title:'Saved matrix and column vectors',
+    description:'Older nested-list matrices and vectors are upgraded automatically to textbook matrix notation.',
+    text:'Write the system as A = [[2, 3], [4, 1]], X = [[x], [y]], and B = [[8], [7]].',
   },
   {
     title:'Stretching round brackets',
@@ -50,7 +50,7 @@ const samples=[
 
 export default function MathPreview() {
   return <main className='math-preview-page'>
-    <header><span>LearnBridge localhost test</span><strong>Native MathML renderer 3</strong></header>
+    <header><span>LearnBridge localhost test</span><strong>Native MathML renderer 4</strong></header>
     <section className='math-preview-intro'>
       <span className='eyebrow'>EQUATION QUALITY CHECK</span>
       <h1>Textbook mathematics and chemistry notation</h1>
