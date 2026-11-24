@@ -286,6 +286,35 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      - name: Ensure production VM is running
+        env:
+          AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+          AZURE_VM_NAME: ${{ vars.AZURE_VM_NAME }}
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          resource_group="${AZURE_RESOURCE_GROUP:-LEARNBRIDGEAPP-RG}"
+          vm_name="${AZURE_VM_NAME:-learnbridgeapp-vm}"
+
+          power_state="$(az vm get-instance-view \
+            --resource-group "$resource_group" \
+            --name "$vm_name" \
+            --query "instanceView.statuses[?starts_with(code, 'PowerState/')].code | [0]" \
+            --output tsv)"
+
+          if [[ "$power_state" != "PowerState/running" ]]; then
+            echo "Starting $vm_name..."
+            az vm start \
+              --resource-group "$resource_group" \
+              --name "$vm_name"
+          fi
+
+          az vm wait \
+            --resource-group "$resource_group" \
+            --name "$vm_name" \
+            --created
+
       - name: Temporarily authorize this runner for SSH
         shell: bash
         run: |
