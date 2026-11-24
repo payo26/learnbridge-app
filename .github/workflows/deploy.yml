@@ -6,22 +6,179 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      terraform_action:
+        description: Terraform operation for the production infrastructure
+        required: true
+        default: skip
+        type: choice
+        options:
+          - skip
+          - plan
+          - apply
+      allow_destructive:
+        description: Allow a Terraform plan containing delete or replacement actions
+        required: true
+        default: false
+        type: boolean
+      deploy_application:
+        description: Build and deploy the LearnBridge application
+        required: true
+        default: true
+        type: boolean
 
 permissions:
   contents: read
 
 concurrency:
-  group: learnbridge-${{ github.ref }}
+  group: learnbridge-production-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   DOCKERHUB_NAMESPACE: prayo25
   IMAGE_TAG: sha-${{ github.sha }}
+  TF_WORKING_DIR: terraform
+  TF_IN_AUTOMATION: true
+  TF_INPUT: false
 
 jobs:
+  terraform-check:
+    name: Validate Terraform configuration
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v7
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: "~1.9.0"
+          terraform_wrapper: false
+
+      - name: Require Terraform configuration
+        run: test -f "$TF_WORKING_DIR/main.tf"
+
+      - name: Check Terraform formatting
+        run: terraform fmt -check -recursive "$TF_WORKING_DIR"
+
+      - name: Initialize without remote state
+        run: terraform -chdir="$TF_WORKING_DIR" init -backend=false -input=false
+
+      - name: Validate Terraform configuration
+        run: terraform -chdir="$TF_WORKING_DIR" validate
+
+  terraform-infrastructure:
+    name: Plan or apply Azure infrastructure
+    if: github.event_name == 'workflow_dispatch' && inputs.terraform_action != 'skip'
+    needs: terraform-check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment:
+      name: production
+    permissions:
+      contents: read
+      id-token: write
+    outputs:
+      public_ip: ${{ steps.infrastructure-output.outputs.public_ip }}
+
+    env:
+      ARM_USE_OIDC: "true"
+      ARM_USE_AZUREAD: "true"
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      TF_VAR_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      TF_VAR_admin_ssh_public_key: ${{ secrets.VM_SSH_PUBLIC_KEY }}
+      TF_VAR_ssh_source_address_prefix: ${{ secrets.SSH_SOURCE_ADDRESS_PREFIX }}
+      TFSTATE_RESOURCE_GROUP: ${{ vars.TFSTATE_RESOURCE_GROUP }}
+      TFSTATE_STORAGE_ACCOUNT: ${{ vars.TFSTATE_STORAGE_ACCOUNT }}
+      TFSTATE_CONTAINER: ${{ vars.TFSTATE_CONTAINER }}
+      TFSTATE_KEY: ${{ vars.TFSTATE_KEY }}
+      TERRAFORM_ACTION: ${{ inputs.terraform_action }}
+      ALLOW_DESTRUCTIVE: ${{ inputs.allow_destructive }}
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v7
+
+      - name: Azure login with OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: "~1.9.0"
+          terraform_wrapper: false
+
+      - name: Validate infrastructure inputs
+        run: |
+          set -Eeuo pipefail
+          test -n "$ARM_CLIENT_ID"
+          test -n "$ARM_TENANT_ID"
+          test -n "$ARM_SUBSCRIPTION_ID"
+          test -n "$TF_VAR_admin_ssh_public_key"
+          test -n "$TFSTATE_RESOURCE_GROUP"
+          test -n "$TFSTATE_STORAGE_ACCOUNT"
+          test -n "$TFSTATE_CONTAINER"
+          test -n "$TFSTATE_KEY"
+
+      - name: Initialize remote Terraform state
+        run: |
+          terraform -chdir="$TF_WORKING_DIR" init \
+            -input=false \
+            -reconfigure \
+            -backend-config="resource_group_name=$TFSTATE_RESOURCE_GROUP" \
+            -backend-config="storage_account_name=$TFSTATE_STORAGE_ACCOUNT" \
+            -backend-config="container_name=$TFSTATE_CONTAINER" \
+            -backend-config="key=$TFSTATE_KEY" \
+            -backend-config="use_oidc=true" \
+            -backend-config="use_azuread_auth=true"
+
+      - name: Create reviewed Terraform plan
+        run: |
+          terraform -chdir="$TF_WORKING_DIR" plan \
+            -input=false \
+            -lock-timeout=5m \
+            -out=tfplan
+          terraform -chdir="$TF_WORKING_DIR" show -json tfplan > "$RUNNER_TEMP/tfplan.json"
+
+      - name: Show Terraform plan
+        run: terraform -chdir="$TF_WORKING_DIR" show -no-color tfplan
+
+      - name: Block unapproved destructive changes
+        run: |
+          set -Eeuo pipefail
+          destructive_count="$(jq '[.resource_changes[]? | select(.change.actions | index("delete"))] | length' "$RUNNER_TEMP/tfplan.json")"
+          echo "Terraform delete/replacement actions: $destructive_count"
+          if [ "$destructive_count" -gt 0 ] && [ "$ALLOW_DESTRUCTIVE" != "true" ]; then
+            echo "::error::Terraform proposes $destructive_count destructive or replacement action(s). Reconcile/import the existing Azure resources, or explicitly approve destructive changes."
+            exit 1
+          fi
+
+      - name: Apply reviewed Terraform plan
+        if: inputs.terraform_action == 'apply'
+        run: terraform -chdir="$TF_WORKING_DIR" apply -input=false -auto-approve tfplan
+
+      - name: Capture Terraform public IP
+        id: infrastructure-output
+        shell: bash
+        run: |
+          public_ip="$(terraform -chdir="$TF_WORKING_DIR" output -raw public_ip_address 2>/dev/null || true)"
+          echo "public_ip=$public_ip" >> "$GITHUB_OUTPUT"
+          if [ -n "$public_ip" ]; then
+            echo "Terraform public IP: $public_ip"
+          fi
+
   build-test-push:
     name: Test, build and publish images
-    runs-on: ubuntu-latest
+    if: github.event_name != 'workflow_dispatch' || inputs.deploy_application == true
+    runs-on: ubuntu-24.04
     timeout-minutes: 35
 
     steps:
@@ -84,15 +241,75 @@ jobs:
 
   deploy-production:
     name: Deploy to Azure VM
-    if: github.event_name != 'pull_request'
-    needs: build-test-push
-    runs-on: ubuntu-latest
+    needs:
+      - terraform-check
+      - terraform-infrastructure
+      - build-test-push
+    if: >-
+      always() &&
+      github.event_name != 'pull_request' &&
+      needs.terraform-check.result == 'success' &&
+      needs.build-test-push.result == 'success' &&
+      (needs.terraform-infrastructure.result == 'success' || needs.terraform-infrastructure.result == 'skipped') &&
+      (github.event_name == 'push' || inputs.deploy_application == true)
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     environment:
       name: production
       url: https://learnbridge-app.com
+    permissions:
+      contents: read
+      id-token: write
+
+    env:
+      SSH_HOST: ${{ secrets.VM_HOST }}
+      SSH_USER: ${{ secrets.VM_USER }}
+      TERRAFORM_PUBLIC_IP: ${{ needs.terraform-infrastructure.outputs.public_ip }}
+      AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+      AZURE_NSG_NAME: ${{ vars.AZURE_NSG_NAME }}
 
     steps:
+      - name: Verify deployment host matches Terraform
+        run: |
+          set -Eeuo pipefail
+          test -n "$SSH_HOST"
+          test -n "$SSH_USER"
+          if [ -n "$TERRAFORM_PUBLIC_IP" ] && [ "$TERRAFORM_PUBLIC_IP" != "$SSH_HOST" ]; then
+            echo "::error::Terraform reports $TERRAFORM_PUBLIC_IP but VM_HOST is $SSH_HOST. Update VM_HOST and VM_KNOWN_HOSTS, then rerun with terraform_action=skip."
+            exit 1
+          fi
+
+      - name: Azure login for temporary SSH access
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Temporarily authorize this runner for SSH
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          resource_group="${AZURE_RESOURCE_GROUP:-learnbridgeapp-rg}"
+          nsg_name="${AZURE_NSG_NAME:-learnbridgeapp-nsg}"
+          runner_ip="$(curl -4 --fail --silent --show-error https://api.ipify.org)"
+          test -n "$runner_ip"
+          echo "Authorizing GitHub runner ${runner_ip}/32 for this deployment."
+          az network nsg rule create \
+            --resource-group "$resource_group" \
+            --nsg-name "$nsg_name" \
+            --name github-actions-temporary-ssh \
+            --priority 1090 \
+            --direction Inbound \
+            --access Allow \
+            --protocol Tcp \
+            --source-address-prefixes "${runner_ip}/32" \
+            --source-port-ranges '*' \
+            --destination-address-prefixes '*' \
+            --destination-port-ranges 22 \
+            --only-show-errors \
+            --output none
+
       - name: Configure SSH
         env:
           SSH_PRIVATE_KEY: ${{ secrets.VM_SSH_PRIVATE_KEY }}
@@ -105,8 +322,6 @@ jobs:
 
       - name: Deploy and verify exact release
         env:
-          SSH_HOST: ${{ secrets.VM_HOST }}
-          SSH_USER: ${{ secrets.VM_USER }}
           DEPLOY_TAG: ${{ env.IMAGE_TAG }}
         run: |
           ssh -o BatchMode=yes -o StrictHostKeyChecking=yes \
@@ -222,3 +437,17 @@ jobs:
           compose ps
           echo "LearnBridge ${DEPLOY_TAG} (version ${expected_version}) deployed and verified successfully."
           REMOTE
+
+      - name: Remove temporary SSH access
+        if: always()
+        continue-on-error: true
+        shell: bash
+        run: |
+          resource_group="${AZURE_RESOURCE_GROUP:-learnbridgeapp-rg}"
+          nsg_name="${AZURE_NSG_NAME:-learnbridgeapp-nsg}"
+          az network nsg rule delete \
+            --resource-group "$resource_group" \
+            --nsg-name "$nsg_name" \
+            --name github-actions-temporary-ssh \
+            --only-show-errors \
+            --output none || true

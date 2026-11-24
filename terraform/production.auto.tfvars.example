@@ -1,0 +1,14 @@
+# These values reproduce the NEW West US environment requested in the supplied
+# Terraform configuration. Do not copy this file into production state for the
+# existing East US VM without first reviewing the replacement plan.
+location             = "West US"
+resource_group_name  = "learnbridgeapp-rg"
+vm_name              = "learnbridgeapp-vm"
+vm_size              = "Standard_B1ms"
+admin_username        = "azureuser"
+storage_account_name = "learnbridgeappsa"
+
+# Supply these sensitive values through GitHub environment secrets instead:
+# TF_VAR_subscription_id
+# TF_VAR_admin_ssh_public_key
+# TF_VAR_ssh_source_address_prefix
