@@ -12,6 +12,7 @@ import { curatedIllustrationsForLesson, diagramCoverage, diagramCoverageTemplate
 import { filterRelevantIllustrations } from './diagram-relevance.mjs';
 import { normalizeAiBaseURL } from './ai-endpoint.mjs';
 import { passwordRecoveryConfigured } from './password-email.mjs';
+import { lessonPayloadForAudience } from './lesson-audience.mjs';
 import {
   createPlatformRouter,
   consumerPlansConfigured,
@@ -209,7 +210,7 @@ function sendServiceError(res, error) {
   return fail(res, 503, 'Lesson content is temporarily unavailable. Please retry.');
 }
 app.get('/api/health', async (_req, res) => {
-  try { await pool.query('SELECT 1'); res.json({ status:'ok', version:'8.0.13', seoStaticPages:210, seoIndexablePages:204, mathematicsRenderer:'native-mathml-4', chemistryRenderer:'native-mathml-1', diagramStandard:'audited-textbook-diagram-coverage', diagramCoverageAudit:true, diagramRelevanceAudit:true, curatedDiagramTemplates:diagramCoverageTemplates.length, anatomyPlateCount:10, azureApiRoute:'openai-v1', passwordRecoveryConfigured:passwordRecoveryConfigured(), curricula:['Nigerian','British'], britishFrameworks:['England KS3','England KS4 and GCSE','Cambridge IGCSE','Cambridge International AS & A Level'], illustrationVersion:ILLUSTRATION_VERSION, illustrationRendererVersion:6, database:'connected', aiConfigured:Boolean(process.env.AZURE_OPENAI_API_KEY || process.env.OPENAI_API_KEY), aiProvider:process.env.AZURE_OPENAI_ENDPOINT ? 'azure-openai' : 'openai', schoolLicensing:true, consumerSubscriptions:true, paymentsConfigured:paymentMode() !== 'not-configured', consumerPlansConfigured:consumerPlansConfigured(), paymentMode:paymentMode() }); }
+  try { await pool.query('SELECT 1'); res.json({ status:'ok', version:'8.0.17', seoStaticPages:210, seoIndexablePages:204, mathematicsRenderer:'native-mathml-4', chemistryRenderer:'native-mathml-1', lessonInterfaces:'role-separated-v4', teacherLessonPlans:true, studentAnswerIsolation:true, conciseStudentMathematics:true, briefStudentMathematics:true, administratorWorkspaceSwitching:true, diagramStandard:'audited-textbook-diagram-coverage', diagramCoverageAudit:true, diagramRelevanceAudit:true, curatedDiagramTemplates:diagramCoverageTemplates.length, anatomyPlateCount:10, azureApiRoute:'openai-v1', passwordRecoveryConfigured:passwordRecoveryConfigured(), curricula:['Nigerian','British'], britishFrameworks:['England KS3','England KS4 and GCSE','Cambridge IGCSE','Cambridge International AS & A Level'], illustrationVersion:ILLUSTRATION_VERSION, illustrationRendererVersion:6, database:'connected', aiConfigured:Boolean(process.env.AZURE_OPENAI_API_KEY || process.env.OPENAI_API_KEY), aiProvider:process.env.AZURE_OPENAI_ENDPOINT ? 'azure-openai' : 'openai', schoolLicensing:true, consumerSubscriptions:true, paymentsConfigured:paymentMode() !== 'not-configured', consumerPlansConfigured:consumerPlansConfigured(), paymentMode:paymentMode() }); }
   catch { fail(res, 503, 'Database unavailable'); }
 });
 app.post('/api/class-plan', async (req, res) => {
@@ -230,16 +231,17 @@ app.post('/api/lesson-notes', async (req, res) => {
     const plan = await getPlan(input, access.canGenerate);
     const topic = plan.topics.find(t => t.id === input.topicId);
     if (!topic) return fail(res, 400, 'This topic does not belong to the selected class plan.');
+    const subject=subjects.find(candidate=>candidate.id===input.subjectId);
+    const audiencePayload=notes=>lessonPayloadForAudience({auth:req.auth,requestedAudience:req.body?.audience,notes,topic,subjectId:input.subjectId,subjectName:subject?.name||input.subjectId,classLabel:className(input)});
     if (input.profile.startsWith('ng') && input.year === 7 && ['mathematics','general-mathematics'].includes(input.subjectId) && input.topicId === 't3') {
-      return res.json({ notes:fractionsNotes, provenance:'Built-in editorial lesson notes', complete:true });
+      return res.json({ ...audiencePayload(fractionsNotes), provenance:'Built-in editorial lesson notes', complete:true });
     }
     const noteKey = key('note', input.profile, input.year, input.subjectId, input.topicId);
     let saved = await cacheGet(noteKey);
     if (saved?.notes?.sections?.length && saved.notes.quiz?.length) {
-      const subject=subjects.find(candidate=>candidate.id===input.subjectId);
       const sanitized=await sanitizeSavedIllustrations({noteKey,saved,input,subject,topic});
       saved=sanitized.saved;
-      return res.json({ ...saved, provenance:'', complete:true });
+      return res.json({ ...saved, ...audiencePayload(saved.notes), provenance:'', complete:true });
     }
     const part = req.body.part === undefined ? 0 : Number(req.body.part);
     if (!Number.isInteger(part) || part < 0 || part > 3) return fail(res, 400, 'Choose a valid lesson section.');
@@ -266,11 +268,35 @@ app.post('/api/lesson-notes', async (req, res) => {
       if (parts.every((value,index) => validPart(value,index))) {
         const notes = assemble(parts);
         await cachePut(noteKey, { notes, provenance });
-        return res.json({ notes, provenance, complete:true });
+        return res.json({ ...audiencePayload(notes), provenance, complete:true });
       }
     }
     res.json({ part, content, provenance, complete:false });
   } catch (error) { sendServiceError(res, error); }
+});
+app.post('/api/lesson-checkpoint', async (req, res) => {
+  const input=validateInput(req.body,true);
+  if(!input)return fail(res,400,'Choose a valid topic.');
+  const access=lessonAccess(req,input);
+  if(!access.allowed)return res.status(403).json({error:'This lesson requires an active subscription, school pilot or paid licence. Sign in or choose a LearnBridge package.',code:'LICENSE_REQUIRED'});
+  try {
+    const plan=await getPlan(input,access.canGenerate);
+    const topic=plan.topics.find(candidate=>candidate.id===input.topicId);
+    if(!topic)return fail(res,400,'This topic does not belong to the selected class plan.');
+    let notes;
+    if(input.profile.startsWith('ng')&&input.year===7&&['mathematics','general-mathematics'].includes(input.subjectId)&&input.topicId==='t3')notes=fractionsNotes;
+    else notes=(await cacheGet(key('note',input.profile,input.year,input.subjectId,input.topicId)))?.notes;
+    if(!Array.isArray(notes?.quiz)||!notes.quiz.length)return fail(res,404,'The lesson checkpoint is not ready yet. Reopen the lesson and retry.');
+    const answers=req.body?.answers;
+    if(!Array.isArray(answers)||answers.length!==notes.quiz.length||!answers.every(answer=>Number.isInteger(answer)))return fail(res,400,'Answer every checkpoint question before checking.');
+    const results=notes.quiz.map((question,index)=>({
+      correct:answers[index]===question.answer,
+      correctAnswer:question.choices[question.answer],
+      explanation:question.explanation,
+    }));
+    const score=Math.round(results.filter(result=>result.correct).length/results.length*100);
+    res.json({score,results});
+  }catch(error){sendServiceError(res,error);}
 });
 app.get('/api/saved-lessons', requirePreloadAccess, async (_req, res) => {
   try {

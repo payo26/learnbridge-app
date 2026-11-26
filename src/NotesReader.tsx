@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from './api';
 import { Search, ChevronRight, X, BookOpen, Bookmark, Lock } from 'lucide-react';
-import type { Plan, Topic, Notes, NoteRecord, LessonIllustration, IllustrationElement } from '../shared/notes-types';
+import type { Plan, Topic, Notes, NoteRecord, LessonIllustration, IllustrationElement, TeacherGuide } from '../shared/notes-types';
 import { useAuth } from './AuthContext';
 import type { ApiError } from './api';
 import MathText from './MathText';
@@ -287,14 +287,17 @@ export function LessonIllustrationView({illustration,index}:{illustration:Lesson
 }
 
 type Props = {
+  audience:LessonAudience;
   profile:string; year:number; subjectId:string; subjectName:string;
   records:Record<string,NoteRecord>; onSave:(record:NoteRecord)=>void;
   onClose:()=>void; onRequestAccess:()=>void; initialTopicId?:string;
 };
-type LessonResponse = { notes?:Notes; provenance:string; complete:boolean; part?:number; content?:Partial<Notes> };
+type LessonAudience='teacher'|'student';
+type CheckpointResult={correct:boolean;correctAnswer:string;explanation:string};
+type LessonResponse = { notes?:Notes; teacherGuide?:TeacherGuide; audience?:LessonAudience; provenance:string; complete:boolean; part?:number; content?:Partial<Notes> };
 const pending = new Map<string,Promise<{data:LessonResponse}>>();
-function lessonRequest(payload:Record<string,unknown>) {
-  const key=JSON.stringify(payload);
+function lessonRequest(payload:Record<string,unknown>,requestIdentity:string) {
+  const key=`${requestIdentity}:${JSON.stringify(payload)}`;
   const current=pending.get(key);
   if(current)return current;
   const promise=api.post('/api/lesson-notes',payload) as Promise<{data:LessonResponse}>;
@@ -315,6 +318,9 @@ function serviceMessage(e:unknown,fallback:string) {
 }
 export default function NotesReader(p:Props) {
   const {user,loading:authLoading,refresh}=useAuth();
+  const requestedAudience:LessonAudience=p.audience;
+  const teacherView=requestedAudience==='teacher';
+  const conciseMathematicsStudent=!teacherView&&/\b(?:mathematics|maths?)\b/i.test(p.subjectName);
   const [plan,setPlan]=useState<Plan|null>(null);
   const [planError,setPlanError]=useState('');
   const [planRetry,setPlanRetry]=useState(0);
@@ -322,6 +328,7 @@ export default function NotesReader(p:Props) {
   const [search,setSearch]=useState('');
   const [term,setTerm]=useState('All');
   const [notes,setNotes]=useState<Notes|null>(null);
+  const [teacherGuide,setTeacherGuide]=useState<TeacherGuide|null>(null);
   const [provenance,setProvenance]=useState('');
   const [notesError,setNotesError]=useState('');
   const [accessRequired,setAccessRequired]=useState(false);
@@ -329,6 +336,8 @@ export default function NotesReader(p:Props) {
   const [noteRetry,setNoteRetry]=useState(0);
   const [answers,setAnswers]=useState<Record<number,number>>({});
   const [submitted,setSubmitted]=useState(false);
+  const [checkpointResults,setCheckpointResults]=useState<CheckpointResult[]>([]);
+  const [checking,setChecking]=useState(false);
   const [validation,setValidation]=useState('');
   const context={profile:p.profile,year:p.year,subjectId:p.subjectId};
   const id=topic?[p.profile,p.year,p.subjectId,topic.id].join(':'):'';
@@ -349,18 +358,19 @@ export default function NotesReader(p:Props) {
   },[p.profile,p.year,p.subjectId,planRetry]);
   useEffect(()=>{
     let live=true;
-    setNotes(null);setNotesError('');setAccessRequired(false);setPreparation(0);setAnswers({});setSubmitted(false);setValidation('');
+    setNotes(null);setTeacherGuide(null);setNotesError('');setAccessRequired(false);setPreparation(0);setAnswers({});setSubmitted(false);setCheckpointResults([]);setValidation('');
     const selected=topic;
     async function load() {
       if(!selected)return;
       if(authLoading)return;
-      const cacheKey=['learnbridge-full-note-v8-coverage6-relevance1',p.profile,p.year,p.subjectId,selected.id].join(':');
+      const cacheKey=['learnbridge-full-note-v11-brief-mathematics1',requestedAudience,user?.id||'public',p.profile,p.year,p.subjectId,selected.id].join(':');
       try {
-        const cached=JSON.parse(localStorage.getItem(cacheKey)||'null') as {notes:Notes;provenance:string;rendererVersion?:number;cachedAt?:number}|null;
+        const cached=JSON.parse(localStorage.getItem(cacheKey)||'null') as {notes:Notes;teacherGuide?:TeacherGuide;audience?:LessonAudience;provenance:string;rendererVersion?:number;cachedAt?:number}|null;
         if(cached?.notes?.sections?.length && cached.notes.quiz?.length && cached.notes.illustrationVersion===6
+          && cached.audience===requestedAudience
           && cached.rendererVersion===ILLUSTRATION_RENDERER_VERSION && typeof cached.cachedAt==='number'
           && Date.now()-cached.cachedAt<LESSON_BROWSER_CACHE_MS) {
-          if(live){setNotes(cached.notes);setProvenance(cached.provenance);}
+          if(live){setNotes(cached.notes);setTeacherGuide(cached.teacherGuide||null);setProvenance(cached.provenance);}
           return;
         }
       }catch { /* A blocked browser cache must not prevent server loading. */ }
@@ -368,7 +378,7 @@ export default function NotesReader(p:Props) {
         for(let part=0;part<4;part++) {
           if(!live)return;
           setPreparation(part);
-          const {data:result}=await lessonRequest({...context,topicId:selected.id,part});
+          const {data:result}=await lessonRequest({...context,topicId:selected.id,part,audience:requestedAudience},`${requestedAudience}:${user?.id||'public'}`);
           if(!live)return;
           if(result.notes && result.complete!==false) {
             if(!result.notes.sections?.length || !result.notes.quiz?.length)throw Error('Incomplete notes response');
@@ -382,8 +392,8 @@ export default function NotesReader(p:Props) {
               }catch { /* An illustration failure must not hide the complete lesson text. */ }
             }
             if(!live)return;
-            setNotes(finalNotes);setProvenance(result.provenance);
-            try {localStorage.setItem(cacheKey,JSON.stringify({notes:finalNotes,provenance:result.provenance,rendererVersion:ILLUSTRATION_RENDERER_VERSION,cachedAt:Date.now()}));}catch { /* Backend cache remains available. */ }
+            setNotes(finalNotes);setTeacherGuide(result.teacherGuide||null);setProvenance(result.provenance);
+            try {localStorage.setItem(cacheKey,JSON.stringify({notes:finalNotes,teacherGuide:result.teacherGuide,audience:result.audience||requestedAudience,provenance:result.provenance,rendererVersion:ILLUSTRATION_RENDERER_VERSION,cachedAt:Date.now()}));}catch { /* Backend cache remains available. */ }
             return;
           }
           if(result.part!==part || !result.content)throw Error('Incomplete lesson section response');
@@ -397,24 +407,28 @@ export default function NotesReader(p:Props) {
     }
     void load();
     return ()=>{live=false;};
-  },[p.profile,p.year,p.subjectId,topic?.id,noteRetry,authLoading,user?.id,user?.entitlement.active]);
+  },[p.profile,p.year,p.subjectId,topic?.id,noteRetry,authLoading,user?.id,user?.entitlement.active,requestedAudience]);
   function save(changes:Partial<NoteRecord>) {
     if(!topic)return;
     p.onSave({...record,...changes,id,profile:p.profile,year:p.year,subjectId:p.subjectId,topic,
       read:changes.read??record?.read??false,bookmarked:changes.bookmarked??record?.bookmarked??false});
   }
-  function score() {
-    if(!notes)return;
+  async function score() {
+    if(!notes||!topic)return;
     if(notes.quiz.some((_,i)=>answers[i]===undefined)){setValidation('Answer every checkpoint question before checking.');return;}
-    const next=Math.round(notes.quiz.filter((q,i)=>answers[i]===q.answer).length/notes.quiz.length*100);
-    save({score:Math.max(record?.score||0,next)});setSubmitted(true);setValidation('');
+    setChecking(true);setValidation('');
+    try{
+      const {data}=await api.post('/api/lesson-checkpoint',{...context,topicId:topic.id,answers:notes.quiz.map((_,index)=>answers[index])}) as {data:{score:number;results:CheckpointResult[]}};
+      save({score:Math.max(record?.score||0,data.score)});setCheckpointResults(data.results);setSubmitted(true);
+    }catch(error){setValidation(serviceMessage(error,'The checkpoint could not be checked. Please retry.'));}
+    finally{setChecking(false);}
   }
   const filtered=plan?.topics.filter(t=>(term==='All'||String(t.term)===term)&&t.title.toLowerCase().includes(search.toLowerCase()))||[];
   const index=plan?.topics.findIndex(t=>t.id===topic?.id)??-1;
   return <div className='modal-overlay notes-overlay'><section role='dialog' aria-modal='true' aria-labelledby='notes-heading' className='lesson-modal notes-modal'>
     <div className='modal-header'><span>{p.subjectName} {classLabel}</span><button className='icon-button' aria-label='Close subject' onClick={p.onClose}><X/></button></div>
     <div className='lesson-body'>
-      <div className='notes-top'><div><span className='eyebrow'>{topic?'FULL LESSON NOTES':'CLASS TOPIC PLAN'}</span><h2 id='notes-heading'>{topic?topic.title:p.subjectName+' '+classLabel}</h2></div>{topic&&<button className='outline' onClick={()=>setTopic(null)}>All topics</button>}</div>
+      <div className='notes-top'><div><span className='eyebrow'>{topic?(teacherView?'TEACHER LESSON NOTE':'STUDENT LESSON'):'CLASS TOPIC PLAN'}</span><h2 id='notes-heading'>{topic?topic.title:p.subjectName+' '+classLabel}</h2></div>{topic&&<button className='outline' onClick={()=>setTopic(null)}>All topics</button>}</div>
       {!plan&&!planError&&<div className='content-loading' role='status'><BookOpen/><p>Preparing the detailed topic plan for {classLabel}...</p><small>The first preparation may take a little time. Saved plans load faster.</small></div>}
       {planError&&<div className='notice' role='alert'><p>{planError}</p><button className='primary' onClick={()=>setPlanRetry(x=>x+1)}>Retry topic plan</button></div>}
       {plan&&!topic&&<>
@@ -424,27 +438,36 @@ export default function NotesReader(p:Props) {
         {[1,2,3].map(t=>filtered.some(x=>x.term===t)&&<section className='term-block' key={t}><h3>Suggested Term {t}</h3><div className='lesson-picker'>{filtered.filter(x=>x.term===t).map(x=>{
           const r=p.records[[p.profile,p.year,p.subjectId,x.id].join(':')];
           const canOpen=x.id==='t1'||user?.role==='super_admin'||user?.entitlement.active;
-          return <button key={x.id} onClick={()=>setTopic(x)}><span>{x.title}<small>{x.id==='t1'?'Public sample lesson':canOpen?'Open full notes - examples - practice':'Subscription or school licence required'}{r?.read?' - Read':''}{r?.score!==undefined?' - Best '+r.score+'%':''}</small></span>{canOpen?<ChevronRight size={18}/>:<Lock size={16}/>}</button>;
+          return <button key={x.id} onClick={()=>setTopic(x)}><span>{x.title}<small>{x.id==='t1'?'Public sample lesson':canOpen?(teacherView?'Open teacher lesson note - plan - answer key':'Open student lesson - examples - practice'):'Subscription or school licence required'}{r?.read?(teacherView?' - Prepared':' - Read'):''}{!teacherView&&r?.score!==undefined?' - Best '+r.score+'%':''}</small></span>{canOpen?<ChevronRight size={18}/>:<Lock size={16}/>}</button>;
         })}</div></section>)}
       </>}
       {plan&&topic&&<>
         <div className='topic-pagination'><button className='outline' disabled={index<=0} onClick={()=>setTopic(plan.topics[index-1])}>Previous topic</button><span>{index+1} of {plan.topics.length}</span><button className='outline' disabled={index>=plan.topics.length-1} onClick={()=>setTopic(plan.topics[index+1])}>Next topic</button></div>
-        {!notes&&!notesError&&!accessRequired&&<div className='content-loading' role='status'><BookOpen/><p>Preparing lesson section {preparation+1} of 4...</p><small>{['Learning objectives, key terms and foundations','Detailed explanations and common mistakes','Worked examples and lesson summary','Practice questions, model answers and checkpoint'][preparation]} - {classLabel}. Completed sections are saved so a retry can resume.</small></div>}
+        {!notes&&!notesError&&!accessRequired&&<div className='content-loading' role='status'><BookOpen/><p>Preparing {teacherView?'teacher lesson note':'student lesson'} section {preparation+1} of 4...</p><small>{['Learning objectives, key terms and foundations','Detailed explanations and common mistakes','Worked examples and lesson summary',teacherView?'Practice questions, teacher answer key and assessment':'Practice questions and checkpoint'][preparation]} - {classLabel}. Completed sections are saved so a retry can resume.</small></div>}
         {accessRequired&&<div className='access-gate' role='status'><span><Lock size={24}/></span><h3>Choose a package to open this lesson</h3><p>Topic 1 in every subject is a public sample. Full notes are available through an active individual or family subscription, school pilot or school licence.</p><button className='primary' onClick={p.onRequestAccess}>{user?'Open my dashboard':'View packages and sign in'}</button></div>}
         {notesError&&<div className='notice' role='alert'><p>{notesError}</p><button className='primary' onClick={()=>setNoteRetry(x=>x+1)}>Retry lesson notes</button></div>}
-        {notes&&<div className='full-notes'>
+        {notes&&<div className={`full-notes ${teacherView?'teacher-lesson-view':'student-lesson-view'}`}>
           {provenance && !/\b(?:ai|artificial intelligence|openai|azure)\b/i.test(provenance) && <p className='content-provenance'>{provenance}</p>}
-          <div className='notes-actions'><button className='outline' onClick={()=>save({bookmarked:!record?.bookmarked})}><Bookmark size={14}/>{record?.bookmarked?'Remove bookmark':'Save bookmark'}</button><button className='outline' onClick={()=>save({read:true})}>{record?.read?'Lesson marked as read':'Mark as read'}</button><button className='outline' onClick={()=>window.print()}>Print notes</button></div>
+          <div className='lesson-audience-banner'><strong>{teacherView?'Teacher workspace':conciseMathematicsStudent?'Brief student mathematics lesson':'Student workspace'}</strong><span>{teacherView?'Classroom planning, delivery guidance and private answer key':conciseMathematicsStudent?'Key ideas, short worked examples, practice and checkpoint':'Explanations, worked examples, independent practice and checkpoint'}</span></div>
+          <div className='notes-actions'><button className='outline' onClick={()=>save({bookmarked:!record?.bookmarked})}><Bookmark size={14}/>{record?.bookmarked?'Remove bookmark':'Save bookmark'}</button><button className='outline' onClick={()=>save({read:true})}>{record?.read?(teacherView?'Marked as prepared':'Lesson marked as read'):(teacherView?'Mark as prepared':'Mark as read')}</button><button className='outline' onClick={()=>window.print()}>Print {teacherView?'teacher note':'lesson'}</button></div>
+          {teacherView&&teacherGuide&&<section className='teacher-guide' aria-label='Teacher lesson plan'>
+            <div className='teacher-guide-heading'><div><span className='eyebrow'>PRIVATE TEACHER MATERIAL</span><h3>Teacher lesson plan</h3></div><span className='duration-chip'>{teacherGuide.recommendedDurationMinutes} minutes</span></div>
+            <div className='teacher-guide-grid'><article><h4>Preparation</h4><ul>{teacherGuide.preparation.map(item=><li key={item}><MathText text={item}/></li>)}</ul></article><article><h4>Success criteria</h4><ul>{teacherGuide.successCriteria.map(item=><li key={item}><MathText text={item}/></li>)}</ul></article></div>
+            <h4>Suggested teaching sequence</h4><div className='teaching-sequence'>{teacherGuide.sequence.map(item=><article key={item.phase}><span>{item.durationMinutes} min</span><div><h5>{item.phase}</h5><ul>{item.activities.map(activity=><li key={activity}><MathText text={activity}/></li>)}</ul></div></article>)}</div>
+            <div className='teacher-guide-grid'><article><h4>Teaching prompts</h4><ul>{teacherGuide.teachingPrompts.map(item=><li key={item}><MathText text={item}/></li>)}</ul></article><article><h4>Assessment guidance</h4><ul>{teacherGuide.assessmentGuidance.map(item=><li key={item}><MathText text={item}/></li>)}</ul></article></div>
+            {teacherGuide.homework.length>0&&<article className='teacher-homework'><h4>Suggested homework</h4><ol>{teacherGuide.homework.map(item=><li key={item}><MathText text={item}/></li>)}</ol></article>}
+          </section>}
           <section className='objectives'><h3>Learning objectives</h3><ul>{notes.objectives.map(s=><li key={s}><MathText text={s}/></li>)}</ul></section>
           <section><h3>Key terms</h3><dl>{notes.keyTerms.map(k=><div key={k.term}><dt><MathText text={k.term}/></dt><dd><MathText text={k.definition}/></dd></div>)}</dl></section>
           {notes.illustrations&&notes.illustrations.length>0&&<section className='lesson-illustrations'><h3>Textbook diagrams</h3><p>Study these accurate, labelled diagrams alongside the lesson explanation.</p>{notes.illustrations.map((illustration,index)=><LessonIllustrationView key={`${illustration.title}-${index}`} illustration={illustration} index={index}/>)}</section>}
           {notes.sections.map(s=><section key={s.heading}><h3><MathText text={s.heading}/></h3>{s.paragraphs.map((text,i)=><p key={i}><MathText text={text}/></p>)}</section>)}
           <section><h3>Worked examples</h3>{notes.examples.map(e=><div className='worked-example' key={e.title}><h4><MathText text={e.title}/></h4><ol>{e.steps.map((step,i)=><li key={i}><MathText text={step}/></li>)}</ol></div>)}</section>
           <section className='objectives'><h3>Lesson summary</h3><ul>{notes.summary.map(s=><li key={s}><MathText text={s}/></li>)}</ul></section>
-          <section><h3>Practice questions</h3><p>Try each question before opening its model answer.</p>{notes.exercises.map((e,i)=><div className='practice-question' key={i}><strong>{i+1}. <MathText text={e.question}/></strong><details><summary>Show model answer</summary><p><MathText text={e.answer}/></p><p><MathText text={e.explanation}/></p></details></div>)}</section>
-          <section className='checkpoint'><h3>Knowledge checkpoint</h3>{notes.quiz.map((q,i)=><div className='checkpoint-question' key={i}><p><strong>{i+1}. <MathText text={q.question}/></strong></p><div className='answers'>{q.choices.map((choice,j)=><button key={j} disabled={submitted} aria-pressed={answers[i]===j} className={answers[i]===j?'answer selected':'answer'} onClick={()=>{setAnswers(a=>({...a,[i]:j}));setValidation('');}}><span>{String.fromCharCode(65+j)}</span><MathText text={choice}/></button>)}</div>{submitted&&<div className={answers[i]===q.answer?'feedback correct':'feedback'}><strong>{answers[i]===q.answer?'Correct':'Review this answer'}</strong><p>Correct answer: <MathText text={q.choices[q.answer]}/></p><p><MathText text={q.explanation}/></p></div>}</div>)}
-          {validation&&<p className='validation' role='alert'>{validation}</p>}{submitted?<><p className='notice-neutral'>Checkpoint score: {Math.round(notes.quiz.filter((q,i)=>answers[i]===q.answer).length/notes.quiz.length*100)}% - Best saved score: {record?.score}%</p><button className='primary' onClick={()=>{setSubmitted(false);setAnswers({});}}>Try again</button></>:<button className='primary' onClick={score}>Check answers</button>}
-          </section>
+          <section><h3>{teacherView?'Learner practice questions':'Practice questions'}</h3><p>{teacherView?'Give learners the questions before consulting the private answer key below.':'Complete these questions independently. Your teacher may review the answers with you.'}</p>{notes.exercises.map((e,i)=><div className='practice-question' key={i}><strong>{i+1}. <MathText text={e.question}/></strong></div>)}</section>
+          {teacherView&&teacherGuide&&<section className='teacher-answer-key'><span className='eyebrow'>PRIVATE TEACHER MATERIAL</span><h3>Teacher answer key</h3><h4>Practice questions</h4>{teacherGuide.answerKey.exercises.map(item=><article key={item.number}><strong>{item.number}. <MathText text={item.answer}/></strong><p><MathText text={item.explanation}/></p></article>)}<h4>Knowledge checkpoint</h4>{teacherGuide.answerKey.checkpoint.map(item=><article key={item.number}><strong>{item.number}. <MathText text={item.correctChoice}/></strong><p><MathText text={item.explanation}/></p></article>)}</section>}
+          {!teacherView&&<section className='checkpoint'><h3>Knowledge checkpoint</h3>{notes.quiz.map((q,i)=><div className='checkpoint-question' key={i}><p><strong>{i+1}. <MathText text={q.question}/></strong></p><div className='answers'>{q.choices.map((choice,j)=><button key={j} disabled={submitted||checking} aria-pressed={answers[i]===j} className={answers[i]===j?'answer selected':'answer'} onClick={()=>{setAnswers(a=>({...a,[i]:j}));setValidation('');}}><span>{String.fromCharCode(65+j)}</span><MathText text={choice}/></button>)}</div>{submitted&&checkpointResults[i]&&<div className={checkpointResults[i].correct?'feedback correct':'feedback'}><strong>{checkpointResults[i].correct?'Correct':'Review this answer'}</strong><p>Correct answer: <MathText text={checkpointResults[i].correctAnswer}/></p><p><MathText text={checkpointResults[i].explanation}/></p></div>}</div>)}
+          {validation&&<p className='validation' role='alert'>{validation}</p>}{submitted?<><p className='notice-neutral'>Checkpoint score: {Math.round(checkpointResults.filter(result=>result.correct).length/checkpointResults.length*100)}% - Best saved score: {record?.score}%</p><button className='primary' onClick={()=>{setSubmitted(false);setAnswers({});setCheckpointResults([]);}}>Try again</button></>:<button className='primary' disabled={checking} onClick={()=>void score()}>{checking?'Checking answers...':'Check answers'}</button>}
+          </section>}
         </div>}
       </>}
     </div>
