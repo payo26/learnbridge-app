@@ -36,7 +36,7 @@ const money=(kobo:number|null|undefined,currency='NGN')=>kobo==null?'Set in Pays
 const date=(value:string|null|undefined)=>value?new Intl.DateTimeFormat('en-NG',{dateStyle:'medium'}).format(new Date(value)):'Not set';
 const errorText=(error:unknown)=>(error as ApiError)?.response?.data?.error||(error as Error)?.message||'The request could not be completed.';
 const copy=(value:string)=>navigator.clipboard?.writeText(value);
-const destination=(user:AuthUser)=>user.role==='super_admin'?'Platform':user.school?.accountType==='individual'||user.school?.accountType==='family'?'Account':'School';
+const destination=(user:AuthUser)=>user.role==='super_admin'?'Platform':user.role==='teacher'||user.role==='student'?'Overview':user.school?.accountType==='individual'||user.school?.accountType==='family'?'Account':'School';
 const resetTokenFromLocation=()=>new URLSearchParams(window.location.hash.replace(/^#/, '')).get('password-reset')||'';
 
 function LoginPanel({onDone,title='Sign in to LearnBridge'}:{onDone:(user:AuthUser)=>void;title?:string}) {
